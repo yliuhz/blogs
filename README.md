@@ -1,57 +1,35 @@
-# hugo-paperMod Example
+## Math with [KaTex](https://khan.github.io/KaTeX/function-support.html) ##
 
-This repository offers an example site for [hugo-PaperMod](https://github.com/adityatelange/hugo-PaperMod)
+More in this [Hugo HP](https://gohugo.io/content-management/formats/#mathjax-with-hugo).
 
-## Install
+#### 1. `_{` problem
 
-Read Wiki => [hugo-PaperMod - Installation](https://github.com/adityatelange/hugo-PaperMod/wiki/Installation)
-
-## Directory Tree
-
+Replace `_{` by `\_{` to disable Markdown transform.
+Such as:  
 ```
-.(site root)
-├── configTaxo.yml
-├── config.yml
-├── content
-│   ├── archives.fr.md
-│   ├── archives.md
-│   ├── posts
-│   │   ├── emoji-support.md
-│   │   ├── markdown-syntax.fa.md
-│   │   ├── markdown-syntax.fr.md
-│   │   ├── markdown-syntax.md
-│   │   ├── math-typesetting.md
-│   │   ├── papermod
-│   │   │   ├── _index.md
-│   │   │   ├── papermod-faq.md
-│   │   │   ├── papermod-features
-│   │   │   │   ├── images
-│   │   │   │   │   ├── homeinfo.jpg
-│   │   │   │   │   ├── profile.jpg
-│   │   │   │   │   └── regular.jpg
-│   │   │   │   └── index.md
-│   │   │   ├── papermod-icons.md
-│   │   │   ├── papermod-installation.md
-│   │   │   └── papermod-variables.md
-│   │   ├── placeholder-text.md
-│   │   └── rich-content.md
-│   ├── search.fr.md
-│   ├── search.md
-│   └── tags
-├── LICENSE
-├── README.md
-├── resources
-│   └── _gen
-│       ├── assets
-│       └── images
-├── static
-│   ├── android-chrome-192x192.png
-│   ├── android-chrome-512x512.png
-│   ├── apple-touch-icon.png
-│   ├── favicon-16x16.png
-│   ├── favicon-32x32.png
-│   ├── favicon.ico
-│   └── papermod-cover.png
-└── themes
-    └── hugo-PaperMod
+s_t = f(U x_t + W s\_{t-1} )
 ```
+
+#### 2. `\` problem
+
+Replace `\` by `\\` to disable Markdown transform.
+Such as:  
+```
+\\{ A\_{i,i} \\}
+```
+
+#### 3. Aligned layout with empty before `=`
+Prepend `\` before `&=`.
+Such as:
+```
+\begin{aligned}
+E_t(y_t, \hat{h_y}) &= -y_t log{\hat{y_t}} \\cr
+E(y, \hat{y})       &= \sum_t{E_t(y_t, \hat{h_y})} \\cr
+                  \ &= -\sum_t{y_t log{h_y})}
+\end{aligned}
+```
+
+## Useful Links
+* [Math Dict](http://www.tudientoan.com/)
+* [KaTex Functions](https://khan.github.io/KaTeX/function-support.html)
+* [Unicode Emoji](https://unicode.org/emoji/charts/text-style.html)

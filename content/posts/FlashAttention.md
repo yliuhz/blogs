@@ -64,8 +64,8 @@ $\mathbf{O}\_i'=\mathbf{P}_{ij}\mathbf{V}_j$
 
 然后需要对上一轮的$\mathbf{O_i}$和$l_i$进行更新，以d=1为例。
 
-![image](https://github.com/yliuhz/blogs/blob/main/content/posts/image-20230518194619599.png)
-
+<!-- ![image](https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/image-20230518194619599.png) -->
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/image-20230518194619599.png" alt="image" width=50%/>
 
 
 $l_i^{new}=l_i+l_{ij}$比较直接
@@ -77,7 +77,7 @@ $\mathbf{O}_i=\mathbf{O}\_i*l_i/l_i^{new} + \mathbf{O}\_{ij}$
 
 论文中的Algorithm1由于考虑了算术稳定性防止\exp得到过大的值，在softmax前减去了最大值m，因此看起来更复杂。
 
-![Algorithm 1](https://github.com/yliuhz/blogs/blob/main/content/posts/iShot_2023-05-19_09.53.57.png)
+![Algorithm 1](https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-05-19_09.53.57.png)
 
 
 
@@ -98,7 +98,7 @@ for i in 1...T_r:
     更新O_i和l_i
 ```
 
-如下不可以
+如下不可以。
 
 ```python
 for i in 1...T_r:
