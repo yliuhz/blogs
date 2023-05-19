@@ -33,11 +33,11 @@ Flash-attention的思路：分块在高速on-chip显存上**增量式**计算，
 
 首先推导增量式的softmax函数：
 
-对一个向量$\mathbf{x}$计算softmax：$\sigma(x)=\exp(x)/{\sum_i {\exp(x_i)}}$
+对一个向量$\mathbf{x}$计算softmax：$\sigma(\mathbf{x})=\exp(\mathbf{x})/{\sum_i {\exp(\mathbf{x}_i)}}$
 
-对两个向量的拼接$[\mathbf{x},\mathbf{y}]$计算softmax：$\sigma([x,y])=[\exp(x),\exp(y)]/(\sum_i\exp(x_i)+\sum_j\exp(y_j))$
+对两个向量的拼接$[\mathbf{x},\mathbf{y}]$计算softmax：$\sigma([\mathbf{x},\mathbf{y}])=[\exp(\mathbf{x}),\exp(\mathbf{y})]/(\sum_i\exp(\mathbf{x}_i)+\sum_j\exp(\mathbf{y}_j))$
 
-设$l(x)=\sum_i\exp(x_i)$，则$\sigma([x,y])=[\exp(x),\exp(y)]/(l(x)+l(y))$
+设$l(\mathbf{x})=\sum_i\exp(\mathbf{x}_i)$，则$\sigma([\mathbf{x},\mathbf{y}])=[\exp(\mathbf{x}),\exp(\mathbf{y})]/(l(\mathbf{x})+l(\mathbf{y}))$
 
 
 
