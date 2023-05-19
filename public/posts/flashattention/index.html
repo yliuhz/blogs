@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>FlashAttention | LIU Yue&#39;s blog</title>
+<title>FlashAttention | LIU Yue&#39;s blogs</title>
 <meta name="keywords" content="">
 <meta name="description" content="FlashAttention论文发表于Neurips2022，第一单位是斯坦福大学。
 作者提出了一种使用更小代价计算self-attention的方法，并从理论上保证flash-attention给出的是精确的attention值，与现有的近似attention不同。作者指出现有方法专注于减少FLOPs，而本文专注于减少IO。
@@ -194,7 +194,7 @@ for i in 1...T_r: 取出Q_i,O_i和l_i for j in 1...T_c: 取出K_j和V_j ... 更�
   },
   "publisher": {
     "@type": "Organization",
-    "name": "LIU Yue's blog",
+    "name": "LIU Yue's blogs",
     "logo": {
       "@type": "ImageObject",
       "url": "https://yliuhz.github.io/blogs/favicon.ico"
@@ -219,7 +219,7 @@ for i in 1...T_r: 取出Q_i,O_i和l_i for j in 1...T_c: 取出K_j和V_j ... 更�
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://yliuhz.github.io/blogs" accesskey="h" title="LIU Yue&#39;s blog (Alt + H)">LIU Yue&#39;s blog</a>
+            <a href="https://yliuhz.github.io/blogs" accesskey="h" title="LIU Yue&#39;s blogs (Alt + H)">LIU Yue&#39;s blogs</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -292,7 +292,7 @@ for i in 1...T_r: 取出Q_i,O_i和l_i for j in 1...T_c: 取出K_j和V_j ... 更�
     <h1 class="post-title">
       FlashAttention
     </h1>
-    <div class="post-meta"><span title='2023-05-18 18:59:54 +0800 HKT'>May 18, 2023</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Theme PaperMod&nbsp;|&nbsp;<a href="https://github.com/adityatelange/hugo-PaperMod/tree/exampleSite/content/posts/FlashAttention.md" rel="noopener noreferrer" target="_blank">Suggest Changes</a>
+    <div class="post-meta"><span title='2023-05-18 18:59:54 +0800 HKT'>May 18, 2023</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Theme PaperMod&nbsp;|&nbsp;<a href="https://github.com/yliuhz/blogs/tree/main/content/posts/FlashAttention.md" rel="noopener noreferrer" target="_blank">Suggest Changes</a>
 
 </div>
   </header> <div class="toc">
@@ -336,13 +336,13 @@ for i in 1...T_r: 取出Q_i,O_i和l_i for j in 1...T_c: 取出K_j和V_j ... 更�
 <p>$l_{ij}=\text{rowsum}(\mathbf{P}_{ij})$</p>
 <p>$\mathbf{O}_i&rsquo;=\mathbf{P}_{ij}\mathbf{V}_j$</p>
 <p>然后需要对上一轮的$\mathbf{O_i}$和$l_i$进行更新，以d=1为例。</p>
-<p><img loading="lazy" src="https://github.com/yliuhz/blogs/blob/exampleSite/content/posts/image-20230518194619599.png" alt="image"  />
+<p><img loading="lazy" src="https://github.com/yliuhz/blogs/blob/main/content/posts/image-20230518194619599.png" alt="image"  />
 </p>
 <p>$l_i^{new}=l_i+l_{ij}$比较直接</p>
 <p>两个红色的矩阵相乘得到当前的$\mathbf{O}_{ij}$。我们知道上一轮softmax使用的$l_i$只是当前i行的前部分之和，因此这里要乘以旧分母除以新分母，同时由于绿色$\mathbf{O}_i$由i行j列的内积得来，还需要加上$\mathbf{O}_{ij}$，这样得到$\mathbf{O}_i$的增量式更新：</p>
 <p>$\mathbf{O}_i=\mathbf{O}_i*l_i/l_i^{new} + \mathbf{O}_{ij}$</p>
 <p>论文中的Algorithm1由于考虑了算术稳定性防止\exp得到过大的值，在softmax前减去了最大值m，因此看起来更复杂。</p>
-<p><img loading="lazy" src="https://github.com/yliuhz/blogs/blob/exampleSite/content/posts/iShot_2023-05-19_09.53.57.png" alt="Algorithm 1"  />
+<p><img loading="lazy" src="https://github.com/yliuhz/blogs/blob/main/content/posts/iShot_2023-05-19_09.53.57.png" alt="Algorithm 1"  />
 </p>
 <h3 id="发散qa">发散QA<a hidden class="anchor" aria-hidden="true" href="#发散qa">#</a></h3>
 <p><strong>Q1</strong>. Algorithm 1中的i、j循环可以交换吗？<a href="https://github.com/yliuhz/awesome-papers/tree/main/FlashAttention">github</a></p>

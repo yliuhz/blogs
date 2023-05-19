@@ -1,5 +1,5 @@
 baseURL: "https://yliuhz.github.io/blogs" # if your site is in 'https', then make sure your base url isn't written using 'http' otherwise your sitemap would contain http (as opposeed to https) URLs. This would affect Google indexing of your URLs.
-title: LIU Yue's blog
+title: LIU Yue's blogs
 paginate: 5
 theme: hugo-PaperMod
 
@@ -80,26 +80,19 @@ params:
               url: tags
 
     homeInfoParams:
-        Title: "PaperMod"
+        Title: "LIU Yue's blogs"
         Content: >
-            Welcome to demo of hugo's theme PaperMod.
+            Welcome to my personal blog. Any discussions are welcome. Reach me by yliuhz@outlook.com. \
 
-            - **PaperMod** is a simple but fast and responsive theme with useful feature-set that enhances UX.
-
-            - Do give a 🌟 on Github !
-
-            - PaperMod is based on theme [Paper](https://github.com/nanxiaobei/hugo-paper).
+            欢迎来到我的个人博客！欢迎讨论！
 
     socialIcons:
         - name: github
-          url: "https://github.com/adityatelange/hugo-PaperMod"
-        - name: KoFi
-          url: "https://ko-fi.com/adityatelange"
-        - name: Rss
-          url: "index.xml"
+          url: "https://github.com/yliuhz/"
+  
 
     editPost:
-        URL: "https://github.com/adityatelange/hugo-PaperMod/tree/exampleSite/content"
+        URL: "https://github.com/yliuhz/blogs/tree/main/content"
         Text: "Suggest Changes" # edit text
         appendFilePath: true # to append file path to Edit link
 
