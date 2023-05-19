@@ -89,6 +89,10 @@ params:
     socialIcons:
         - name: github
           url: "https://github.com/yliuhz/"
+        - name: cv
+          url: "https://yliuhz.github.io"
+        - name: email
+          url: "yliuhz@outlook.com"
   
 
     editPost:
