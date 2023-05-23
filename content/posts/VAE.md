@@ -30,7 +30,7 @@ katex: true
 <p align="center" style="color:grey">(图源Lilian Weng的博客：https://lilianweng.github.io/posts/2018-08-12-vae/)</p>
 
 我们想同时极大化观测数据点$\mathbf{x}$的似然，以及真假编码器的分布差距，即最大化
-$$\mathbb{E}_{\mathbf{z}\sim q(z|x)}\log p(x|z)-D_{KL}(q(z|x)||p(z))$$
+$$\mathbb{E}\_{\mathbf{z}\sim q(z|x)}\log p(x|z)-D_{KL}(q(z|x)||p(z))$$
 左边的是重构误差取反，右边的在先验分布为正态分布时可以显式展开。
 
 
