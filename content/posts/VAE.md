@@ -1,3 +1,12 @@
+---
+title: "VAE"
+date: 2023-05-23T20:42:27+08:00
+draft: false
+katex: true
+---
+
+
+
 
 ## Variational Autoencoders
 
@@ -17,7 +26,7 @@
 
 在推导KL散度的表达式时就可以得到变分自编码器的损失函数ELBO。
 
-<img src="iShot_2023-05-23_20.26.52.png" width=80%/>
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-05-23_20.26.52.png" width=80%/>
 <p align="center" style="color:grey">(图源Lilian Weng的博客：https://lilianweng.github.io/posts/2018-08-12-vae/)</p>
 
 我们想同时极大化观测数据点$\mathbf{x}$的似然，以及真假编码器的分布差距，即最大化
