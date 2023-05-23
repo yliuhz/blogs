@@ -6,7 +6,6 @@ katex: true
 ---
 
 
-
 **FlashAttention**论文发表于Neurips2022，第一单位是斯坦福大学。
 
 作者提出了一种使用更小代价计算self-attention的方法，并从理论上保证flash-attention给出的是精确的attention值，与现有的近似attention不同。作者指出现有方法专注于减少FLOPs，而本文专注于减少IO。
