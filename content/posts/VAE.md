@@ -24,7 +24,7 @@ katex: true
 
 这里使用KL散度衡量两个分布的距离，即$D_{KL}(q(\mathbf{z}|\mathbf{x})||p(\mathbf{z}|\mathbf{x}))$。注意KL散度不具有对称性，原博主[Lilian Weng](https://lilianweng.github.io/posts/2018-08-12-vae/)甚至指出了为什么不使用$D_{KL}(p(\mathbf{z}|\mathbf{x})||q(\mathbf{z}|\mathbf{x}))$。
 
-具体来说，前向KL散度$D_{KL}(p||q)=\mathbb{E}\_{\mathbf{z}\sim p(\mathbf{z})}\log \frac{p(\mathbf{z})}{q(\mathbf{z})}=\int p(\mathbf{z})\log \frac{p(\mathbf{z})}{q(\mathbf{z})}d\mathbf{z}$中，p>0的位置要求q必须同时>0(因为$\lim_{q\to 0}p\log \frac{p}{q}\to \inf$)。因此优化前向KL散度会导致q覆盖了每个p分布概率不为0的点。反过来，我们这里使用的反向KL散度$D_{KL}(q||p)=\mathbb{E}_{\mathbf{z}\sim q(\mathbf{z})}\log \frac{q(\mathbf{z})}{p(\mathbf{z})}=\int q(\mathbf{z})\log \frac{q(\mathbf{z})}{p(\mathbf{z})}d\mathbf{z}$，在p=0时保证了q必须=0。
+具体来说，前向KL散度$D_{KL}(p||q)=\mathbb{E}\_{\mathbf{z}\sim p(\mathbf{z})}\log \frac{p(\mathbf{z})}{q(\mathbf{z})}=\int p(\mathbf{z})\log \frac{p(\mathbf{z})}{q(\mathbf{z})}d\mathbf{z}$中，p>0的位置要求q必须同时>0(因为$\lim_{q\to 0}p\log \frac{p}{q}\to \infty$)。因此优化前向KL散度会导致q覆盖了每个p分布概率不为0的点。反过来，我们这里使用的反向KL散度$D_{KL}(q||p)=\mathbb{E}_{\mathbf{z}\sim q(\mathbf{z})}\log \frac{q(\mathbf{z})}{p(\mathbf{z})}=\int q(\mathbf{z})\log \frac{q(\mathbf{z})}{p(\mathbf{z})}d\mathbf{z}$，在p=0时保证了q必须=0。
 - 前向KL散度：p>0时q>0，可能导致q平铺在p>0的区域
 - 反向KL散度（使用的）：p=0时q=0，可能导致q被挤压在p的一个峰上
 
