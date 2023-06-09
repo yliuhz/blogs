@@ -1,7 +1,9 @@
 baseURL: "https://yliuhz.github.io/blogs" # if your site is in 'https', then make sure your base url isn't written using 'http' otherwise your sitemap would contain http (as opposeed to https) URLs. This would affect Google indexing of your URLs.
 title: LIU Yue's blogs
 paginate: 5
-theme: hugo-PaperMod
+theme: 
+- hugo-PaperMod
+- hugo-cite
 
 enableInlineShortcodes: true
 enableRobotsTXT: true
