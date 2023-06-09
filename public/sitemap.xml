@@ -2,13 +2,25 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://yliuhz.github.io/blogs/posts/flashattention/</loc>
-    <lastmod>2023-05-18T18:59:54+08:00</lastmod>
+    <loc>https://yliuhz.github.io/blogs/posts/eng/</loc>
+    <lastmod>2023-06-09T11:16:54+08:00</lastmod>
   </url><url>
     <loc>https://yliuhz.github.io/blogs/</loc>
-    <lastmod>2023-05-18T18:59:54+08:00</lastmod>
+    <lastmod>2023-06-09T11:16:54+08:00</lastmod>
   </url><url>
     <loc>https://yliuhz.github.io/blogs/posts/</loc>
+    <lastmod>2023-06-09T11:16:54+08:00</lastmod>
+  </url><url>
+    <loc>https://yliuhz.github.io/blogs/posts/gnn2mlp/</loc>
+    <lastmod>2023-06-08T16:37:51+08:00</lastmod>
+  </url><url>
+    <loc>https://yliuhz.github.io/blogs/posts/diffusion/</loc>
+    <lastmod>2023-05-24T10:45:03+08:00</lastmod>
+  </url><url>
+    <loc>https://yliuhz.github.io/blogs/posts/vae/</loc>
+    <lastmod>2023-05-23T20:42:27+08:00</lastmod>
+  </url><url>
+    <loc>https://yliuhz.github.io/blogs/posts/flashattention/</loc>
     <lastmod>2023-05-18T18:59:54+08:00</lastmod>
   </url><url>
     <loc>https://yliuhz.github.io/blogs/archives.fr/</loc>

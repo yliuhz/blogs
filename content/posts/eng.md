@@ -5,6 +5,8 @@ draft: false
 bibFile: bib/bib.json
 ---
 
+<link rel="stylesheet" href="/hugo-cite/hugo-cite.css">
+
 # Demo Page
 
 ## Ferre hinnitibus erat accipitrem dixi Troiae tollens
@@ -20,7 +22,3 @@ Lorem markdownum{{< cite "vial_design_2017" >}}, a quoque nutu est _quodcumque m
 {{< bibliography cited >}}
 
 ---
-
-## Full Reference List
-
-{{< bibliography >}}
