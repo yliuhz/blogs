@@ -4,14 +4,13 @@ bibFile: bib/bib.json
 date: 2023-06-08T16:37:51+08:00
 draft: false
 mathjax: true
-
 ---
 
 最近发现一篇ICLR2023 spotlight的蒸馏GNN到MLP的论文，觉得很新鲜。向前追溯发现其是基于ICLR2022的GLNN做的，遂在这里整理一下相关内容和自己的理解。
 
 ## Graph-less Neural Networks (GLNN) 
 
-作者( {{< cite "VitaliRosati2016;SinatraVitaliRosati2014" "20;22-23" >}} )指出现实场景难以落地GNN的一大原因是GNN的推理速度很慢。假设图中平均的顶点度为$R$，那么对于一个$L$层GNN的网络，总共需要提取(fetch)$O(R^L)$次邻居和自己的节点特征。如下图所示。该指数量级的提取次数导致GNN的推理时间随层数增加而指数上升。
+作者 {{< cite "dEMqP61a" >}} 指出现实场景难以落地GNN的一大原因是GNN的推理速度很慢。假设图中平均的顶点度为$R$，那么对于一个$L$层GNN的网络，总共需要提取(fetch)$O(R^L)$次邻居和自己的节点特征。如下图所示。该指数量级的提取次数导致GNN的推理时间随层数增加而指数上升。
 另一方面，多层感知机MLP由于不需要图结构作为输入，因此无需提取其他节点的特征，推理速度是线性的。
 
 <img src="iShot_2023-06-08_16.43.02.png" />
@@ -66,6 +65,17 @@ $$I(G;y_i)=I(X^{[i]},\mathcal{E}^{[i]};y_i)=I(\mathcal{E}^{[i]};y_i)+I(X^{[i]};y
 
 <img src="iShot_2023-06-08_20.54.42.png" />
 
+
+## NOise-robust Structure-aware MLPs On Graphs (NOSMOG)
+
+解决的问题和框架基本和GLNN相同，作者 {{< cite "49r47O4e" >}}针对GLNN存在的不足进行优化。两大卖点是标题中的对噪声的鲁棒和对图结构的感知。使用对抗学习解决噪声的干扰，效果如下图：
+
+
+<img src="iShot_2023-06-09_14.52.45.png" alt="image" width=50%/>
+
+
+
+ICLR2023 还有一篇联系GNN与MLP的文章 {{< cite "ByADi6ga" >}}，没有细看。还有研究者整理了近期GNN&MLP的论文在[Github](https://github.com/wutaiqiang/awesome-GNN2MLP-distillation)。
 
 ## References
 
