@@ -6,7 +6,7 @@ draft: false
 mathjax: true
 ---
 
-最近发现一篇ICLR2023 spotlight的蒸馏GNN到MLP的论文，觉得很新鲜。向前追溯发现其是基于ICLR2022的GLNN做的，遂在这里整理一下相关内容和自己的理解。
+最近发现一篇ICLR2023 spotlight的蒸馏GNN到MLP的论文 {{< cite "49r47O4e" >}}，觉得很新鲜。向前追溯发现其是基于ICLR2022的GLNN {{< cite "dEMqP61a" >}}做的，遂在这里整理一下相关内容和自己的理解。
 
 ## Graph-less Neural Networks (GLNN) 
 
