@@ -79,7 +79,7 @@ $$I(G;y_i)=I(X^{[i]},\mathcal{E}^{[i]};y_i)=I(\mathcal{E}^{[i]};y_i)+I(X^{[i]};y
 
 - GLNN 文中一个重要的结论是，对于现实中的属性图数据集，使用与GNN相同的参数量，**存在一组MLP的参数，由节点的特征向量映射到其类别标签而取得与GNN相近的准确率**，只是单单使用MLP以及标准的随机梯度下降难以学习到这样的参数 (5.3节、5.6节)。这表明节点的特征向量本身具有足够多的信息。这启发了后续KDD2022的GraphMAE {{< cite "6iMLCeK9" >}} 构建重构特征的图自编码器。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-06-13_11.14.08.png" width=80% class="center"/>
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-06-13_15.17.19.png" width=80% class="center"/>
 
 - ICLR2023 还有一篇联系GNN与MLP的文章 {{< cite "ByADi6ga" >}}。与GLNN不同，PMLP {{< cite "ByADi6ga" >}} 在训练时采用MLP架构，而在测试时重新添加信息传递(message passing, MP)操作，同样取得了与GNN相近的准确率。测试时MP添加的位置和次数可以自主设定。作者在与不同的原始GNN架构对比时使用了不同的PMLP测试架构。如下图所示 (来源于作者的报告: [bilibili](https://www.bilibili.com/video/BV1uh4y1G794/?spm_id_from=333.999.0.0&vd_source=5bc35454eb5381b6bccf1051510ae36a))。
 
