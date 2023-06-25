@@ -57,7 +57,7 @@ $$a=\min \left\\{\exp(\beta\Delta\mathcal{L})\frac{\sum_tn_tp(s\to r|t)}{\sum_tn
 
 ## 随机块模型与模块度的联系
 
-随机块模型的优化目标是对数似然，而一些热门的社区发现算法，如Louvain方法等，采用模块度作为优化目标。对数似然和模块度实际上存在联系。
+随机块模型的优化目标是对数似然，而一些热门的社区发现算法，如Louvain方法 {{< cite "2hXkUYg3" >}} 等，采用模块度 {{< cite "uqJs6E0V" >}} 作为优化目标。对数似然和模块度实际上存在联系。
 
 将随机块模型的对数似然式子等价变换，得到
 
@@ -95,7 +95,7 @@ $$Q(g)=\sum_{r=1}^K[p_K(r,r)-p_{degree}(r,r)]$$
 
 $$P(G|\theta,w,g)=\prod_{i<j}\frac{(\theta_i\theta_jw_{g_ig_j})^{A_{ij}}}{A_{ij}!}\exp(-\theta_i\theta_jw_{g_ig_j})\times \prod_i\frac{(\frac{1}{2}\theta_i^2w_{g_ig_i})^{A_{ii}/2}}{(A_{ii}/2)!}\exp\left(-\frac{1}{2}\theta_i^2w_{g_ig_i}\right)$$
 
-其中$\theta_i$作了归一化：$\sum_i\theta_i\delta_{g_i,r}=1$。这样$\theta_i$不再表示顶点$i$度数的期望，而是表示当一条边连向社区$g_i$时，具体连向这个顶点$i$的概率。与经典随机块模型类似，对似然函数进行等价重写：
+其中$\theta_i$作了**归一化**：$\sum_i\theta_i\delta_{g_i,r}=1$。这样$\theta_i$不再表示顶点$i$度数的期望，而是表示当一条边连向社区$g_i$时，具体连向这个顶点$i$的概率。与经典随机块模型类似，对似然函数进行等价重写：
 
 $$P(G|\theta,w,g)=\frac{1}{\prod_{i<j}A_{ij}!\prod_i2^{A_{ii}/2}(A_{ii}/2)!}\prod_i\theta_i^{k_i}\prod_{rs}w_{rs}^{m_{rs}/2}\exp\left(-\frac{1}{2}w_{rs}\right)$$
 
