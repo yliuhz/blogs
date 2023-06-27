@@ -32,5 +32,5 @@ $$\begin{aligned}\mathbf{h}\_u^{(k)}&=\sum_{v\in\mathcal{N}(u)}\text{MLP}^{(k)}(
 
 作者用下图呈现MLPs的泛化方式。灰色表示MLPs要学习的函数，蓝色和黑色分别表示模型在训练集和测试集上的预测。可以看到模型可以拟合训练集上的非线性函数，但脱离训练集后迅速变为线性函数。
 
-<img src="iShot_2023-06-26_20.54.05.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-06-26_20.54.05.png" />
 
