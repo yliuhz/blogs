@@ -1,5 +1,5 @@
 ---
-title: "Unsupervised Deep Graph Structural Learning"
+title: "Unsupervised Deep Graph Structure Learning"
 date: 2023-06-27T09:59:56+08:00
 draft: false
 mathjax: true
@@ -67,4 +67,18 @@ l(z_{l,i},z_{a,i}) &= \log\frac{\exp(\cos(z_{l,i},z_{a,i})/t)}{\sum_{k=1}^n\exp(
 
 其中$t$是温度超参数。
 
+## SLAPS: Self-Supervision Improves Structure Learning for Graph Neural Networks
+
+论文链接：{{< cite "19EFWTVYY" >}}
+
+### 相关工作
+
+作者罗列了图结构学习的可能方法：
+
+- **相似度矩阵**：根据节点之间的相似度，使用$k$最近邻等方法将节点与最相近的$k$个邻居节点相连。
+- **全连接图**：
+- **图学习**：
+- **领域知识**：
+
+### 问题定义
 
