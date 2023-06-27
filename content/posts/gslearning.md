@@ -31,7 +31,7 @@ bibFile: bib/bib.json
 
 ### 解决方案 - SUBLIME
 
-SUBLIME {{< cite "14nyanSAU" >}} 将学习到的图结构视作一种数据增强，与原图进行多视角的对比学习。
+SUBLIME {{< cite "14nyanSAU" >}} 将学习到的图结构视作一种**数据增强**，与原图进行多视角的对比学习。
 
 <img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-06-27_10.22.17.png" />
 
@@ -71,14 +71,72 @@ l(z_{l,i},z_{a,i}) &= \log\frac{\exp(\cos(z_{l,i},z_{a,i})/t)}{\sum_{k=1}^n\exp(
 
 论文链接：{{< cite "19EFWTVYY" >}}
 
-### 相关工作
+<!-- ### 相关工作
 
 作者罗列了图结构学习的可能方法：
 
 - **相似度矩阵**：根据节点之间的相似度，使用$k$最近邻等方法将节点与最相近的$k$个邻居节点相连。
 - **全连接图**：
 - **图学习**：
-- **领域知识**：
+- **领域知识**： -->
 
 ### 问题定义
+
+本文未考虑输入的图结构，只考虑利用输入的节点特征学习图结构。
+
+### 解决方案 - SLAPS
+
+SLAPS包含4个模块：生成器、邻接关系处理器、分类器和自监督。
+
+#### 生成器
+
+生成器是由节点特征到邻接矩阵的映射：$\mathbb{R}^{n\times d}\to\mathbb{R}^{n\times n}$。SLAPS给出了两种生成器：
+
+- 全参数FP：使用$n^2$个参数直接表示邻接矩阵
+- MLP-$k$NN：$\tilde{A}=kNN(MLP(X))$，其中MLP：$\mathbb{R}^{n\times d}\to\mathbb{R}^{n\times d'}$；$k$NN：$\mathbb{R}^{n\times d'}\to\mathbb{R}^{n\times n}$
+
+SLAPS初始化两种生成器使其生成$A^{kNN}$，即由输入节点特征$X$计算的$k$最近邻邻接矩阵。对于FP，直接将参数初始化为$A^{kNN}$即可；对于MLP-$k$NN，将MLP初始化为单位矩阵即可。MLP-$k$NN的两种变体：（1）MLP：$d'\equiv d$；（2）MLP-D：参数矩阵是对角矩阵，其他元素为0。
+
+#### 邻接关系处理器
+
+设生成器输出的邻接矩阵为$\tilde{A}$，那么
+
+$$A=\frac{1}{2}D^{-1/2}(P(\tilde{A})+P(\tilde{A})^T)D^{-1/2}$$
+
+其中$P$是一个函数，取值范围为非负数。$A$保证了对称性和元素的非负性。
+
+#### 分类器
+
+分类器：$\mathbb{R}^{n\times d}\times \mathbb{R}^{n\times n}\to \mathbb{R}^{n\times |C|}$取节点特征$X$和生成的邻接矩阵$A$作为输入，输出节点的类别标签。分类器的训练损失为交叉熵$\mathcal{L}_C$。
+
+#### 自监督
+
+作者发现单独的交叉熵分类损失会导致生成的邻接矩阵中包含一些随机的边，因为这些边是否存在不会对半监督的交叉熵损失造成影响。同时在基准数据集上，这些随机边的比例较高。
+于是，作者额外加入一个去躁自编码器DAE预测节点特征。
+
+最终的损失函数定义为$\mathcal{L}=\mathcal{L}\_C+\mathcal{L}\_{DAE}$。SUBLIME在对比SLAPS时，无监督的条件下只使用$\mathcal{L}_{DAE}$。
+
+## Diffusion Improves Graph Learning
+
+论文链接：{{< cite "PXPd62Wl" >}}，实际发表于NIPS2019，作者在2022年又在arXiv上传了一个新版本。
+
+Diffusion是一种图结构增强的方法。本文主张使用增强后的图结构输入现有模型，而 {{< cite "5H4Nt6Ww" >}} 将原图和diffusion后的图作为两个视角进行多视角学习。
+
+**广义图扩散**：$S=\sum_{k=0}^{\infty}\theta_k T^k$，其中$\theta_k$和$T^k$的选择需要确保该级数是收敛的。
+本文使用了更严格的条件，即要求$\sum_{k=0}^{\infty}\theta_k=1,\theta_k\in[0,1]$，且$T$的特征值$\lambda_i\in[0,1]$。这两个要求是$S$收敛的充分条件。
+$T$称为转移矩阵。
+
+- **转移矩阵**：转移矩阵可以选择随机游走转移矩阵$T_{rw}=AD^{-1}$和对称转移矩阵$T_{sym}=D^{-1/2}AD^{-1/2}$，其中$D_{ii}=\sum_{j=1}^NA_{ij}$表示度矩阵。$T_{rw}$是列随机矩阵（column-stochastic），即每一列的求和等于$1$。进一步地，可以定义
+
+$$\tilde{T}\_{sym}=(w_{loop}I_N+D)^{-1/2}(w_{loop}I_N+A)(w_{loop}I_N+D)^{-1/2}$$
+
+其中$w_{loop}\in\mathbb{R}^+$，表示随机游走以$p_{stay,i}=w_{loop}/D_i$停留在$i$节点。
+
+- **扩散的例子**：两个常用的图扩散是Personalized PageRank（PPR）和热核（the heat kernel）。
+  - PPR: $T=T_{rw}$，$\theta_k^{PPR}=\alpha(1-\alpha)^k$，$\alpha\in(0,1)$
+  - 热核：$T=T_{rw}$，$\theta_k^{HK}=e^{-t}\frac{t^k}{k!}$
+  - 近似图卷积：$T=\tilde{T}^{sym}$，$w_{loop}=1$，$\theta_1=1,\theta_k=0,\forall k\neq 1$
+
+- **稀疏化**：$S$通常是稠密的。可以用top-$k$或$\epsilon$-阈值法剔除$S$中的部分元素。
+
 
