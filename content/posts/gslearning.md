@@ -41,7 +41,7 @@ SUBLIME {{< cite "14nyanSAU" >}} 将学习到的图结构视作一种**数据增
 SUBLIME定义了四种图结构学习器，使用时需要当作超参数调节：
 
 - **全图参数化学习器FGP**：顾名思义，直接使用一个$n\times n$的参数矩阵作为学习的邻接矩阵，即$S=\sigma(\Omega)$，$\Omega\in\mathbb{R}^{n\times n}$；
-  - **初始化**：使用节点特征的$k$最近邻初始化$\Omega$。[github](https://github.com/GRAND-Lab/SUBLIME/blob/93398db994f21bd2b03f15db414e1e03244144e9/graph_learners.py#L19)
+  - **初始化**：使用节点特征的$k$最近邻初始化$\Omega$。[github link](https://github.com/GRAND-Lab/SUBLIME/blob/93398db994f21bd2b03f15db414e1e03244144e9/graph_learners.py#L19)
 
 - **度量学习学习器**：先通过输入得到节点的表征$E\in\mathbb{R}^{n\times d}$，再由表征构建学习的邻接矩阵：
 
@@ -50,12 +50,12 @@ $$S=\phi(h_w(X,A))=\phi(E)$$
 其中$\phi$是非参数函数（即不用训练的函数），如余弦相似度、闵可夫斯基距离（Minkowski distance）等；$h_w$是表征网络。SUBLIME提供了3种得到$E$的表征方法：注意力学习器、MLP学习器和GNN学习器：
 
 - **注意力学习器**：$E^{(l)}=h_w^{(l)}(E^{(l-1)})=\sigma([e_1^{(l-1)}\odot w^{(l)},\cdots,e_n^{(l-1)}\odot w^{(l)}])^T$，其中$E^{(l)}\in\mathbb{R}^{n\times d}$表示第$l$层表征网络的输出；$e_i^{(l-1)}\in\mathbb{R}^d$表示$E^{(l-1)}$的第$i$行，$w^{(l)}\in\mathbb{R}^d$为权重向量。初始时$E^{(0)}=X$。可以看到该表征学习器没有对特征进行降维，每一层的输出$E$的维度都是$\mathbb{R}^{n\times d}$。
-  - **初始化**：$w^{(l)}$初始为全$1$向量，即$w^{(l)}=\\{1,1,\cdots,1\\}\in\mathbb{R}^d$。[github](https://github.com/GRAND-Lab/SUBLIME/blob/93398db994f21bd2b03f15db414e1e03244144e9/layers.py#L40)
+  - **初始化**：$w^{(l)}$初始为全$1$向量，即$w^{(l)}=\\{1,1,\cdots,1\\}\in\mathbb{R}^d$。[github link](https://github.com/GRAND-Lab/SUBLIME/blob/93398db994f21bd2b03f15db414e1e03244144e9/layers.py#L40)
 
 - **MLP学习器**：$E^{(l)}=h_w^{(l)}(E^{(l-1)})=\sigma(E^{(l-1)}\Omega^{(l)})$，其中$\Omega^{(l)}\in\mathbb{R}^{d\times d}$是参数矩阵。
-  - **初始化**：$\Omega$初始时为单位矩阵。[github](https://github.com/GRAND-Lab/SUBLIME/blob/93398db994f21bd2b03f15db414e1e03244144e9/graph_learners.py#L109)
+  - **初始化**：$\Omega$初始时为单位矩阵。[github link](https://github.com/GRAND-Lab/SUBLIME/blob/93398db994f21bd2b03f15db414e1e03244144e9/graph_learners.py#L109)
 - **GNN学习器**：$E^{(l)}=h_w^{(l)}(E^{(l-1)})=\sigma(\tilde{D}^{-1/2}\tilde{A}\tilde{D}^{-1/2}E^{(l-1)}\Omega^{(l)})$，其中$\Omega^{(l)}\in\mathbb{R}^{d\times d}$是参数矩阵。
-  - **初始化**：$\Omega$初始时为单位矩阵。[github](https://github.com/GRAND-Lab/SUBLIME/blob/93398db994f21bd2b03f15db414e1e03244144e9/graph_learners.py#L167)
+  - **初始化**：$\Omega$初始时为单位矩阵。[github link](https://github.com/GRAND-Lab/SUBLIME/blob/93398db994f21bd2b03f15db414e1e03244144e9/graph_learners.py#L167)
 
 图学习器得到的$S$是全连接的，且不一定对称，所以需要进行后处理：即**稀疏化**、**对称化**和**正则化**。
 
@@ -74,7 +74,7 @@ l(z_{l,i},z_{a,i}) &= \log\frac{\exp(\cos(z_{l,i},z_{a,i})/t)}{\sum_{k=1}^n\exp(
 
 $$A_a\gets \tau A_a+(1-\tau)S$$
 
-其中$A_a$是锚点视角图的邻接矩阵，$S$是图结构学习器输出的图结构。$\tau\in\\{0.999,0.9999,0.99999\\}$。[github](https://github.com/GRAND-Lab/SUBLIME/blob/93398db994f21bd2b03f15db414e1e03244144e9/main.py#L213-L221)
+其中$A_a$是锚点视角图的邻接矩阵，$S$是图结构学习器输出的图结构。$\tau\in\\{0.999,0.9999,0.99999\\}$。[github link](https://github.com/GRAND-Lab/SUBLIME/blob/93398db994f21bd2b03f15db414e1e03244144e9/main.py#L213-L221)
 
 ## SLAPS: Self-Supervision Improves Structure Learning for Graph Neural Networks
 
