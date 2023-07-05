@@ -137,3 +137,90 @@ $$\mathcal{L}(G|g)=\sum_{rs}m_{rs}\log\frac{m_{rs}}{\kappa_r\kappa_s}$$
 $$\mathcal{L}(G|g)=\sum_{rs}\frac{m_{rs}}{2m}\log\frac{m_{rs}/2m}{(\kappa_r/2m)(\kappa_s/2m)}$$
 
 换句话说，新的对数似然找到的是与给定顶点度的随机图差别最大的社区划分，而经典的对数似然找到的是与完全随机图差别最大的社区划分。
+
+## 正则随机块模型
+
+研究者发现 {{< cite "H0sxwTcP" >}} 在拟合度保护随机块模型时，模型可能随机地收敛到同配或异配的社区结构，这可能不是数据挖掘用户所期望的。因此，作者提出用一个参数来限定随机块模型的输出。
+
+### 前置实验
+
+作者做了一个实验。首先使用度保护随机块模型生成一个图，其中
+
+$$w_{rs}=
+\begin{cases}
+\gamma w_0, & \text{if } r=s \\\
+w_0, & \text{if } r\neq s
+\end{cases}
+$$
+
+其中$\gamma$越大会生成结构越同配（assortative）的图结构，$w_0$控制了图的稀疏程度。实验中，$\gamma$取$10$，$w_0$取$0.01$，顶点度序列$\\{k_i\\}$由参数为$2.5$的指数分布生成，社区个数为$2$，每个社区包含$10$个顶点。使用MCMC方法（采样方法2）进行采样。在$20$次采样中，模型只有$1$次收敛到同配的局部最优解，其余$19$次均收敛到异配的局部最优解。如下图所示。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-07-05_10.52.32.png" />
+
+### 改进方法
+
+回顾度保护随机块模型中，泊松分布的均值定义为$\lambda_{ij}=\theta_i\theta_jw_{g_ig_j}$。作者将其重新定义为
+
+$$\lambda_{ij}=
+\begin{cases}
+w_{g_ig_j}I_iI_j, & \text{if } g_i=g_j \\\
+w_{g_ig_j}O_iO_j, & \text{if } g_i\neq g_j
+\end{cases}
+$$
+
+回顾对数似然$\log(G|\\{\lambda_{ij}\\})=\frac{1}{2}\sum_{ij}(A_{ij}\log\lambda_{ij}-\lambda_{ij})$，代入新定义的$\lambda_{ij}$，得到
+
+$$\mathcal{L}(G|g,w,I,O)=2\sum_i(k_i^+\log I_i+k_i^-\log O_i)+\sum_{rs}m_{rs}\log w_{rs}-w_{rs}\Lambda_{rs}$$
+
+其中$k_i^+$表示节点$i$在其社区内部的度，$k_i^-=k_i-k_i^+$，$\Lambda_{rs}$为
+
+$$\Lambda_{rs}=
+\begin{cases}
+(\sum_{i\in r}I_i)^2, & \text{if } r=s \\\
+\sum_{i\in r}O_i\sum_{j\in s}O_j, & \text{if }r\neq s 
+\end{cases}
+$$
+
+其中$i\in r$表示$i\in g_i$。
+
+计算$w_{rs}$的极值，得到$\hat{w}\_{rs}=\frac{m_{rs}}{\Lambda_{rs}}$，代入对数似然，得到
+
+$$\mathcal{L}(G|g,I,O)=\sum_{rs}m_{rs}\log\frac{m_{rs}}{\lambda_{rs}}+2\sum_i(k_i^+\log I_i+k_i^-\log O_i)$$
+
+定义一个先验参数$f_i=\frac{I_i}{I_i+O_i}$，$\theta_i=I_i+O_i$，那么上述对数似然可以重写为
+
+$$\mathcal{L}(G|g,I,O)=\sum_{rs}m_{rs}\log\frac{m_{rs}}{\lambda_{rs}}-2\sum_ik_iH(\frac{k_i^+}{k_i},f_i)+2\sum_ik_i\log\theta_i$$
+
+其中$H(\frac{k_i^+}{k_i},f_i)=-\frac{k_i^+}{k_i}\log f_i-\frac{k_i^-}{k_i}\log(1-f_i)$表示观测到的$\frac{k_i^+}{k_i}$与先验$f_i$的交叉熵。因此，最大化该对数似然也是在最小化观测和先验的差距。$\frac{k_i^+}{k_i}$表示顶点$i$连接同社区邻居个数占其所有邻居个数的比例。
+
+假设先验函数$f$只与顶点度有关，即$f_i=f(k_i)$，那么$f(k):\mathbb{Z}_+\to[0,1]$应是严格递减的函数。对于同配的社区划分，我们有
+
+- $f(1)=1$，因为只有一个邻居的顶点一定属于它连接的那个社区；
+- 对于$k\approx|V|$，有$f(k)\ll 1$，因为一个中心顶点最终不归属于任何社区。
+
+作者给出了$f$的一些例子，如
+
+- $f(k)=\alpha+\frac{1-\alpha}{k}$，
+- $f(k)=\max\\{f, \frac{1}{k}\\}$。
+
+### 实验
+
+首先是之前的$20$个顶点的合成数据集的对比。可以发现使用正则随机块模型后，$20$次MCMC均收敛到同配的社区结构。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-07-05_12.09.17.png" />
+
+在Karate club network 真实数据集上，设定$\theta_i=k_i,f(k_i)=\max\\{f, \frac{1}{k_i}\\}$。使用不同的$f$可以控制输出社区的同配性。如下图所示。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-07-05_12.08.49.png" />
+
+### RSBM的性质
+
+**定理1**：当对于任意顶点$i$，$f_i=1/2$时，RSBM的MLE与DCSBM的MLE相同。
+
+**定理2**：对于任意自定义的$\\{f_i\\}$和极大似然估计的结果$\hat{\theta}_i$，RSBM能够保护顶点的度，即
+
+$$\sum_j\lambda_{ij}=k_i$$
+
+**定理3**：当对于任意顶点$i$，$\theta_i=k_i$时，最大化RSBM的对数似然等价于最大化
+
+$$\mathcal{L}=D_{KL}(p_{degree}(r,s)||p_{null}(r,s))-2\mathbb{E}_{k_i}[H(\frac{k_i^+}{k_i})]$$
