@@ -1,6 +1,6 @@
-[submodule "themes/hugo-PaperModX"]
-	path = themes/hugo-PaperModX
-	url = https://github.com/yliuhz/hugo-PaperModX.git
 [submodule "themes/hugo-cite"]
 	path = themes/hugo-cite
 	url = https://github.com/yliuhz/hugo-cite.git
+[submodule "themes/hugo-PaperModX"]
+	path = themes/hugo-PaperModX
+	url = https://github.com/yliuhz/hugo-PaperModX.git
