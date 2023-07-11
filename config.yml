@@ -2,10 +2,10 @@ baseURL: "https://yliuhz.github.io/blogs" # if your site is in 'https', then mak
 title: LIU Yue's blogs
 paginate: 5
 theme: 
-- hugo-PaperMod
+- hugo-PaperModX
 - hugo-cite
 
-enableInlineShortcodes: true
+# enableInlineShortcodes: true
 enableRobotsTXT: true
 buildDrafts: true
 buildFuture: true
@@ -28,21 +28,26 @@ languages:
           category: categories
           tag: tags
           series: series
-        menu:
-            main:
-                - name: Archive
-                  url: archives
-                  weight: 5
-                - name: Search
-                  url: search/
-                  weight: 10
-                - name: Tags
-                  url: tags/
-                  weight: 10
-                # - name: WiKi
-                #   url: https://github.com/adityatelange/hugo-PaperMod/wiki/
-                # - name: Discord
-                #   url: https://discord.gg/ahpmTvhVmp
+        
+
+menu:
+  main:
+    - name: Archive
+      url: archives
+      weight: 5
+    - name: Search
+      url: search/
+      weight: 10
+    - name: Tags
+      url: tags/
+      weight: 10
+    - name: "@Author"
+      url: "https://yliuhz.github.io"
+      params:
+        external: true
+    
+               
+
 
 outputs:
     home:
@@ -56,19 +61,36 @@ params:
     author: Yue
     # author: ["Me", "You"] # multiple authors
 
-    defaultTheme: auto
-    # disableThemeToggle: true
+    # defaultTheme: auto
+    # # disableThemeToggle: true
+    # ShowShareButtons: true
+    # ShowReadingTime: true
+    # # disableSpecial1stPost: true
+    # displayFullLangName: true
+    # ShowPostNavLinks: true
+    # ShowBreadCrumbs: true
+    # ShowCodeCopyButtons: true
+    # ShowRssButtonInSectionTermList: true
+    # ShowToc: true
+    # # comments: false
+    # images: ["papermod-cover.png"]
+
+
+    # theme params
+    DisableLanguageSwitch: true
+    TocOpen: true
+    TocSide: right
+    EnableInstantClick: false
+    EnableImageZoom: true
     ShowShareButtons: true
+    ShareButtons:
+        - twitter
+        - telegram
     ShowReadingTime: true
-    # disableSpecial1stPost: true
-    displayFullLangName: true
-    ShowPostNavLinks: true
-    ShowBreadCrumbs: true
+    ShowWordCount: true
     ShowCodeCopyButtons: true
-    ShowRssButtonInSectionTermList: true
-    ShowToc: true
-    # comments: false
-    images: ["papermod-cover.png"]
+    ShowPostNavLinks: true
+    Email: yliuhz@outlook.com
 
     profileMode:
         enabled: false
@@ -90,51 +112,28 @@ params:
 
             欢迎来到我的个人博客！欢迎讨论！
 
-    socialIcons:
-        - name: github
-          url: "https://github.com/yliuhz/"
-        - name: cv
-          url: "https://yliuhz.github.io"
-        - name: email
-          url: "yliuhz@outlook.com"
-  
 
+    socialIcons:
+        - name: github-simple
+          url: "https://github.com/yliuhz/"
+        # - name: rss-simple
+        #   url: "https://yliuhz.github.io"
+        - name: gmail
+          url: email
+  
     editPost:
         URL: "https://github.com/yliuhz/blogs/tree/main/content"
         Text: "Suggest Changes" # edit text
         appendFilePath: true # to append file path to Edit link
 
-    # label:
-    #     text: "Home"
-    #     icon: icon.png
-    #     iconHeight: 35
 
-    # analytics:
-    #     google:
-    #         SiteVerificationTag: "XYZabc"
 
-    assets:
-        disableHLJS: true
-    #     favicon: "<link / abs url>"
-    #     favicon16x16: "<link / abs url>"
-    #     favicon32x32: "<link / abs url>"
-    #     apple_touch_icon: "<link / abs url>"
-    #     safari_pinned_tab: "<link / abs url>"
-
-    # cover:
-    #     hidden: true # hide everywhere but not in structured data
-    #     hiddenInList: true # hide on list pages and home
-    #     hiddenInSingle: true # hide on single page
-
-    # fuseOpts:
-    #     isCaseSensitive: false
-    #     shouldSort: true
-    #     location: 0
-    #     distance: 1000
-    #     threshold: 0.4
-    #     minMatchCharLength: 0
-    #     keys: ["title", "permalink", "summary", "content"]
-
+# prefer feed.xml rather than index.xml
+outputFormats:
+  RSS:
+    mediatype: "application/rss"
+    baseName: "feed"
+    
 markup:
     goldmark:
         renderer:
@@ -145,28 +144,6 @@ markup:
         codeFences: true
         guessSyntax: true
         lineNos: true
-        # style: github
-privacy:
-    vimeo:
-        disabled: false
-        simple: true
+        style: github
 
-    twitter:
-        disabled: false
-        enableDNT: true
-        simple: true
-
-    instagram:
-        disabled: false
-        simple: true
-
-    youtube:
-        disabled: false
-        privacyEnhanced: true
-
-services:
-    instagram:
-        disableInlineCSS: true
-    twitter:
-        disableInlineCSS: true
         

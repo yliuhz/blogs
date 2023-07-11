@@ -1,26 +1,26 @@
-timeout: 30000
-enableInlineShortcodes: true
+# timeout: 30000
+# enableInlineShortcodes: true
 
-taxonomies:
-  category: categories
-  tag: tags
-  series: series
+# taxonomies:
+#   category: categories
+#   tag: tags
+#   series: series
 
-privacy:
-  vimeo:
-    disabled: false
-    simple: true
+# privacy:
+#   vimeo:
+#     disabled: false
+#     simple: true
 
-  twitter:
-    disabled: false
-    enableDNT: true
-    simple: true
-    disableInlineCSS: true
+#   twitter:
+#     disabled: false
+#     enableDNT: true
+#     simple: true
+#     disableInlineCSS: true
 
-  instagram:
-    disabled: false
-    simple: true
+#   instagram:
+#     disabled: false
+#     simple: true
 
-  youtube:
-    disabled: false
-    privacyEnhanced: true
+#   youtube:
+#     disabled: false
+#     privacyEnhanced: true
