@@ -7,12 +7,14 @@ theme:
 
 enableInlineShortcodes: true
 enableRobotsTXT: true
-buildDrafts: false
+buildDrafts: true
 buildFuture: true
-buildExpired: false
+buildExpired: true
 enableEmoji: true
+pygmentsCodeFences: true
 pygmentsUseClasses: true
 # googleAnalytics: UA-123-45
+
 
 minify:
     disableXML: true
@@ -139,12 +141,11 @@ markup:
             unsafe: true
     highlight:
         noClasses: false
-        # anchorLineNos: true
-        # codeFences: true
-        # guessSyntax: true
-        # lineNos: true
-        # style: monokai
-
+        anchorLineNos: true
+        codeFences: true
+        guessSyntax: true
+        lineNos: true
+        # style: github
 privacy:
     vimeo:
         disabled: false
@@ -168,3 +169,4 @@ services:
         disableInlineCSS: true
     twitter:
         disableInlineCSS: true
+        

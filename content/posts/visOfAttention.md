@@ -14,7 +14,7 @@ bibFile: bib/bib.json
 
 GPT属于因果语言模型（Causal Language Models, CLM）。它的任务是根据当前单词（token）预测下一个单词，是自然的无监督任务。比如，现在我们有一个莎士比亚的文本数据：
 
-``` text
+```text
 First Citizen:
 Before we proceed any further, hear me speak.
 
@@ -69,11 +69,26 @@ $$
 
 每个Linear函数生成了输入$\pmb{x}$的一个代理。其中，$Q$中的每一行表示对应单词要查询的信息，$K$中每一行表示对应单词所包含的信息。这样，将$Q$的第$i$行与$K$的第$j$列做内积运算，就可以得到单词$j$是否对齐了单词$i$所要查找的信息。如果是，那么内积值会偏大，即我们想要的单词$j$对于单词$i$的权重会偏大。
 
-因此，由$Q$和$K$计算权重矩阵，即$\text{Softmax}(\text{Lower}[QK^T])$，其中$\text{Lower}$表示取下三角矩阵，$\text{Softmax}$函数将权重规范化到$[0,1]$之间。这里$\text{Lower}$是由于在GPT的任务中，当前单词只能根据前面的单词预测，因此后面的权重是没有意义的，所以强制通过$\text{Lower}$赋成$0$。
+因此，由$Q$和$K$计算权重矩阵，即$\text{Softmax}(\text{Lower}[QK^T])$，其中$\text{Lower}$表示取下三角矩阵，$\text{Softmax}$函数将权重规范化到$[0,1]$之间。这里$\text{Lower}$是由于在GPT的任务中，当前单词只能根据前面的单词预测，因此后面的权重是没有意义的，所以强制通过$\text{Lower}$赋成$0$。[Colab notebook](https://colab.research.google.com/drive/1JMLa53HDuA-i7ZBmqV7ZnA3c_fvtXnx-?usp=sharing)中一个样例attention权重矩阵是
+
+$$
+\begin{aligned}
+\text{Softmax}(QK^T) = 
+\begin{bmatrix}
+    1       & 0 & 0 & \dots & 0 \\\
+    0.1574       & 0.8426 & 0 & \dots & 0 \\\
+    0.2088  & 0.1646    & 0.6266 & \dots & 0 \\\
+    \vdots & \vdots & \vdots & \ddots & \vdots  \\\
+    0.0210       & 0.0843 & 0.0555 & \dots & 0.2391
+\end{bmatrix}
+\end{aligned}
+$$
+
+可以看到每个前置单词对于当前单词的权重不再相同，且每一行权重求和为$1$。
 
 在得到权重矩阵后，将权重矩阵与值向量相乘，得到输出的词表征矩阵，即
 
-$$\hat{\pmb{Y}} =\text{Softmax}(QK^T)V$$
+$$\hat{\pmb{Y}} =\text{Softmax}(QK^T)V\in\mathbb{R}^{T\times h_s}$$
 
 可以看到与上面 ($\ref{eq1}$) 式不同，自注意力机制中不是直接将权重矩阵与$\pmb{X}$相乘，而同样是用一个线性映射$V$将$\pmb{X}$包起来。[视频](https://www.youtube.com/watch?v=kCc8FmEb1nY&t=4185s)中的讲解是$\pmb{X}$相当于句子的私有特征，而$V$是$\pmb{X}$与其他位置单词交流（传播）时所使用的特征。
 <!-- 这种在传播前再做一次映射的机制在图学习中也有体现，
@@ -89,4 +104,49 @@ Andrej Karpathy在一个[colab notebook](https://colab.research.google.com/drive
 - 这里我们只考虑了纯解码器的架构。如果考虑编码器中的attention块，那么只需要把上述表达式中的$\text{Lower}$函数去掉，让单词自由地聚合信息即可。纯解码器架构采用这种半三角的权重（masking），并经常用于NLP中的自回归任务。
 - Self Attention指的是$K,Q,V$由相同的输入向量$\pmb{X}$计算；反过来，Cross Attention则表示$Q$从原来的$\pmb{X}$计算，而$K,V$从其他来源计算，比如编码器的输出。而编码器-解码器的架构通常用于机器翻译任务中。编码器-解码器结构需要根据编码器的输入（如其他语言）进行输出（conditioned）。而解码器只根据前面的单词生成下面的单词（unconditioned）。
 - Scaled Attention的含义是对权重矩阵做额外放缩：即乘以$1/\text{sqrt\(head_size\)}$。它可以保持权重矩阵的方差，防止在经过$\text{Softmax}$函数后退化为独热向量。这在权重**初始化**时尤其重要：如果有邻居的权重过大，那么节点只会从该邻居聚合信息，这不是我们想要的。
+- Multi-head Attention（MHA）：并行地执行多个attention模块，将每个head的结果拼接作为最终输出。MHA可以提高Transformer模型的运行效率，并将学习到的不同层面的拼接在一起，有利于提高表征质量。
+- 如[视频](https://www.youtube.com/watch?v=kCc8FmEb1nY&t=4185s)中所述，self-attention是一种信息传递机制。每个节点在聚合了邻居节点的信息后，需要在预测logits之前进一步映射信息到另一个空间（原文：每个节点在互相看到彼此后，还没有来得及思考它们发现了什么），这是需要在self-attention后面连接FFN的原因。
 
+### 深层Transformer
+
+- Residual Connections：$\hat{\pmb{Y}}=\text{Proj}(\pmb{X})+\text{Proj}(\text{Softmax}(QK^T)V)\in\mathbb{R}^{T\times C'}$，其中$\text{Proj}$是线性映射，用于转换维度以确保能够相加。[视频](https://www.youtube.com/watch?v=kCc8FmEb1nY&t=4185s)中引用了[博客](https://towardsdatascience.com/residual-blocks-building-blocks-of-resnet-fd90ca15d6ec)。
+- LayerNorm：确保数据的每行具有$0$均值和$1$方差；与之正交的BatchNorm确保数据的每列具有$0$均值和$1$方差。
+
+### Nano-GPT模型概览
+
+我们已经了解了构建GPT所需的所有模块。
+
+```Python
+class GPTLanguageModel(nn.Module):
+
+    def __init__(self):
+        super().__init__()
+        # each token directly reads off the logits for the next token from a lookup table
+        self.token_embedding_table = nn.Embedding(vocab_size, n_embd)
+        self.position_embedding_table = nn.Embedding(block_size, n_embd)
+        self.blocks = nn.Sequential(*[Block(n_embd, n_head=n_head) for _ in range(n_layer)])
+        self.ln_f = nn.LayerNorm(n_embd) # final layer norm
+        self.lm_head = nn.Linear(n_embd, vocab_size)
+
+    def forward(self, idx, targets=None):
+        B, T = idx.shape
+
+        # idx and targets are both (B,T) tensor of integers
+        tok_emb = self.token_embedding_table(idx) # (B,T,C)
+        pos_emb = self.position_embedding_table(torch.arange(T, device=device)) # (T,C)
+        x = tok_emb + pos_emb # (B,T,C)
+        x = self.blocks(x) # (B,T,C)
+        x = self.ln_f(x) # (B,T,C)
+        logits = self.lm_head(x) # (B,T,vocab_size)
+
+        if targets is None:
+            loss = None
+        else:
+            B, T, C = logits.shape
+            logits = logits.view(B*T, C)
+            targets = targets.view(B*T)
+            loss = F.cross_entropy(logits, targets)
+
+        return logits, loss
+    ...
+```

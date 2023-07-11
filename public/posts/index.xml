@@ -10,30 +10,100 @@
       <link>https://yliuhz.github.io/blogs/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Thu, 08 Jun 2023 16:37:51 +0800</lastBuildDate><atom:link href="https://yliuhz.github.io/blogs/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 10 Jul 2023 14:47:33 +0800</lastBuildDate><atom:link href="https://yliuhz.github.io/blogs/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Gnn2mlp</title>
+      <title>Attention Mechanism</title>
+      <link>https://yliuhz.github.io/blogs/posts/visofattention/</link>
+      <pubDate>Mon, 10 Jul 2023 14:47:33 +0800</pubDate>
+      
+      <guid>https://yliuhz.github.io/blogs/posts/visofattention/</guid>
+      <description>Attention机制 根据OpenAI工程师Andrej Karpathy的讲解视频梳理Attention机制及其在GPT（Generative Pretrained Transformer）语言模型中的应用。在构建GPT的过程中我们会了解到attention的定义和它的工作原理。
+构建一个小型GPT模型 GPT属于因果语言模型（Causal Language Models, CLM）。它的任务是根据当前单词（token）预测下一个单词，是自然的无监督任务。比如，现在我们有一个莎士比亚的文本数据：
+1 2 3 4 5 6 7 8 First Citizen: Before we proceed any further, hear me speak. All: Speak, speak. First Citizen: You are all resolved rather to die than to famish? 它是由字符组成的，我们需要一个映射，将其转化为模型可接受的数字向量的输入格式。首先将句子进行分词，然后建立词表，再将每个单词映射到词表的索引。这样，我们可以构建GPT的dataloader：对于给定超参数batch_size=$B$，同时给定句子片段长度$T$，dataloader可以定义为从数据中随机采样$B$个连续的长度为$T$的句子片段，来得到一个batch的数据。如下图所示。
+接着定义模型架构。这里采用经典的Transformer架构 ( Citation: Vaswani,&amp;#32;Shazeer &amp;amp; al.,&amp;#32;2017 Vaswani,&amp;#32; A.,&amp;#32; Shazeer,&amp;#32; N.,&amp;#32; Parmar,&amp;#32; N.,&amp;#32; Uszkoreit,&amp;#32; J.,&amp;#32; Jones,&amp;#32; L.,&amp;#32; Gomez,&amp;#32; A.,&amp;#32; Kaiser,&amp;#32; L.&amp;#32;&amp;amp;&amp;#32;Polosukhin,&amp;#32; I. &amp;#32; (2017). &amp;#32;Attention Is All You Need.</description>
+    </item>
+    
+    <item>
+      <title>Unsupervised Deep Graph Structure Learning</title>
+      <link>https://yliuhz.github.io/blogs/posts/gslearning/</link>
+      <pubDate>Tue, 27 Jun 2023 09:59:56 +0800</pubDate>
+      
+      <guid>https://yliuhz.github.io/blogs/posts/gslearning/</guid>
+      <description>现实中图的结构可能是不完整或有噪声的。为了在图结构不可靠的情况下较好地完成下游任务，研究者提出了如下的图结构学习算法。
+Towards Unsupervised Deep Graph Structure Learning 论文链接： ( Citation: Liu,&amp;#32;Zheng &amp;amp; al.,&amp;#32;2022 Liu,&amp;#32; Y.,&amp;#32; Zheng,&amp;#32; Y.,&amp;#32; Zhang,&amp;#32; D.,&amp;#32; Chen,&amp;#32; H.,&amp;#32; Peng,&amp;#32; H.&amp;#32;&amp;amp;&amp;#32;Pan,&amp;#32; S. &amp;#32; (2022). &amp;#32;Towards Unsupervised Deep Graph Structure Learning. https://doi.org/10.48550/arXiv.2201.06367 ) 相关工作 - 深度图结构学习 一些传统机器学习算法，如图信号处理，谱聚类，图论等可以解决图结构学习问题。但这类方法往往不能处理图上的高维属性。
+最近的深度图结构学习方法用于提升GNN在下游任务上的性能。它们遵循相似的管线：先使用一组可学习的参数建模图的邻接矩阵，再和GNN的参数一起针对下游任务进行优化。基于图结构离散的特性，有多种建模图结构的方法。
+概率模型：伯努利概率模型、随机块模型 度量学习：余弦相似度、点积 直接使用$n\times n$的参数矩阵建模邻接矩阵 问题定义 给定输入图$G=(V,E,X)=(A,X)$，$|V|=n,|E|=m,X\in\mathbb{R}^{n\times d}$
+结构推理问题：输入信息只有顶点特征矩阵$X$ 结构修改问题：输入信息包含了$A,X$，但$A$可能带有噪声 解决方案 - SUBLIME SUBLIME ( Citation: Liu,&amp;#32;Zheng &amp;amp; al.,&amp;#32;2022 Liu,&amp;#32; Y.,&amp;#32; Zheng,&amp;#32; Y.,&amp;#32; Zhang,&amp;#32; D.,&amp;#32; Chen,&amp;#32; H.,&amp;#32; Peng,&amp;#32; H.&amp;#32;&amp;amp;&amp;#32;Pan,&amp;#32; S. &amp;#32; (2022). &amp;#32;Towards Unsupervised Deep Graph Structure Learning.</description>
+    </item>
+    
+    <item>
+      <title>Generalization of GNNs and MLPs</title>
+      <link>https://yliuhz.github.io/blogs/posts/gnn-ood/</link>
+      <pubDate>Mon, 26 Jun 2023 20:08:51 +0800</pubDate>
+      
+      <guid>https://yliuhz.github.io/blogs/posts/gnn-ood/</guid>
+      <description>本文是 ( Citation: Xu,&amp;#32;Zhang &amp;amp; al.,&amp;#32;2021 Xu,&amp;#32; K.,&amp;#32; Zhang,&amp;#32; M.,&amp;#32; Li,&amp;#32; J.,&amp;#32; Du,&amp;#32; S.,&amp;#32; Kawarabayashi,&amp;#32; K.&amp;#32;&amp;amp;&amp;#32;Jegelka,&amp;#32; S. &amp;#32; (2021). &amp;#32;How Neural Networks Extrapolate: From Feedforward to Graph Neural Networks. https://doi.org/10.48550/arXiv.2009.11848 ) 的论文解读。OpenReview显示这篇论文是ICLR2021的Oral论文（前5%）。
+引言 人类具有泛化性，例如学会算术后可以应用到任意大的数字。对于神经网络而言，前馈网络（也叫多层感知机，MLPs）在学习简单的多项式函数时就不能很好地泛化了。然而，基于MLP的图神经网络（GNNs）却在近期的一些任务上表现出较好的泛化性，包括预测物理系统的演进规律，学习图论算法，解决数学公式等。 粗略地分析可能会觉得神经网络可以在训练分布以外的数据上有任意不确定的表现，但是现实中的神经网络大多是用梯度下降训练的，这就导致其泛化性能有规律可以分析。作者使用&amp;quot;神经切线核&amp;quot;（neural tangent kernel，NTK）工具进行分析。
+本文的第一个结论是使用梯度下降训练的MLPs会收敛到任意方向线性的函数，因此MLPs在大多数非线性任务上无法泛化。
+接着本文将分析延伸到基于MLP的GNNs，得到第二个结论：使用线性对齐简化目标函数使得基于MLP的GNNs在非线性任务上能够泛化，即将非线性部分提前集成在模型的结构（如GNN的聚合和读出函数）或在输入的表征向量中（使用无监督方法将输入特征转化为表征向量）。
+前置知识 设$\mathcal{X}$表示数据（向量或图）的域。任务是学习一个函数$g:\mathcal{X}\to \mathbb{R}$，其中训练数据$\{(\pmb{x}_i,y_i)\}\in\mathcal{D}$，$y_i=g(\pmb{x_i})$，$\mathcal{D}$表示训练数据的分布。在训练数据和测试数据同分布的情况下，$\mathcal{D}=\mathcal{X}$；而在评估泛化能力时，$\mathcal{D} $是$\mathcal{X}$的子集。一个模型的泛化能力可以用泛化误差评估：设$f$为模型在训练数据上得到的函数，$l$为任意损失函数，则泛化误差定义为$\mathbb{E}_{\pmb{x}\sim \mathcal{X} \setminus \mathcal{D}}[l(f(\pmb{x}), g(\pmb{x}))]$
+图神经网络GNNs是在MLPs基础上定义的网络。具体来说，初始顶点表征为$\pmb{h}_u^{(0)}=\pmb{x}_u$。在第$k={1..K}$层，顶点表征更新公式为
+$$\begin{aligned}\pmb{h}_u^{(k)}&amp;amp;=\sum_{v\in\mathcal{N}(u)}\text{MLP}^{(k)}(\pmb{h}_u^{(k-1)},\pmb{h}_v^{(k-1)},\pmb{w}_{(v,u)}) \\ \pmb{h}_G&amp;amp;=\text{MLP}^{(K+1)}(\sum_{u\in G}\pmb{h}_u^{(K)})\end{aligned}$$
+其中$\pmb{h}_u^{(k)}$表示第$k$层GNN输出的顶点$u$的表征，$\pmb{h}_G$表示整张图的表征。$\pmb{h}_u^{(k)}$的计算过程称为聚合，$\pmb{h}_G$的计算过程称为读出。以往研究大多使用$\text{sum}$聚合与$\text{sum}$读出，而本文指出替换为另外的函数能够提升泛化性能。
+前馈网络MLPs如何泛化 ReLU MLPs的线性泛化 作者用下图呈现MLPs的泛化方式。灰色表示MLPs要学习的真实函数，蓝色和黑色分别表示模型在训练集和测试集上的预测。可以看到模型可以拟合训练集上的非线性函数，但脱离训练集后迅速变为线性函数。用数字来说，脱离训练集后MLPs预测的决定系数大于$0.99$。
+定理1（线性泛化）：假设在NTK机制下使用均方误差训练了一个两层MLP：$f:\mathbb{R}^d\to\mathbb{R}$。对于任意方向$\pmb{v}\in\mathbb{R}^d$，令$\pmb{x}_0=t\pmb{v}$，那么当$t\to\infty$时，$f(\pmb{x}_0+h\pmb{v})-f(\pmb{x}_0)\to\beta_vh$对任意的$h&amp;gt;0$成立，$\beta_v$是常数。进一步地，给定$\epsilon&amp;gt;0$，对于$t=O(\frac{1}{\epsilon})$，$|\frac{f(\pmb{x}_0+h\pmb{v})-f(\pmb{x}_0)}{h}-\beta_v|&amp;lt;\epsilon$。
+定理1说明了在训练数据集以外，ReLU MLPs可以拟合几乎线性的函数。对于二次函数（$\pmb{x}^TA\pmb{x}$）、余弦函数($\sum_{i=1}^d\cos(2\pi\cdot\pmb{x}^{(i)})$)、根次函数（$\sum_{i=1}^d\sqrt{\pmb{x}^{(i)}}$）等，ReLU MLPs不能泛化。 在合适的超参数下，MLPs可以正确地泛化L1范数，与定理1一致。如下图所示。
+ReLU MLPs什么时候一定（provably）可以泛化 尽管上图显示MLPs对于线性函数可以较好地泛化，但这需要一定的条件，即训练数据集的分布必须足够“多样”。下面的引理1指出只需要$2d$条认真挑选的数据就可以实现ReLU MLPs的线性泛化。
+引理1：令$g(\pmb{x})=\pmb{\beta}^T\pmb{x}$表示待拟合的目标函数，$\pmb{\beta}\in\mathbb{R}^d$。假设数据集$\{\pmb{x}_i\}_{i=1}^n$包含正交基$\{\hat{\pmb{x}}_i\}_{i=1}^d$和$\{-\hat{\pmb{x}}_i\}_{i=1}^d$。若使用均方误差在$\{({\pmb{x}}_i,y_i)\}_{i=1}^n$上训练一个两层ReLU MLP，那么$f({\pmb{x}})={\pmb{\beta}}^T{\pmb{x}}$对任意的${\pmb{x}}\in\mathbb{R}^d$成立。
+然而，仔细挑选出$2d$条符合条件的样本并不容易。下面的定理2基于更现实的场景，指出只要训练数据的分布包含所有的方向（例如一个包含原点的超球），那么在足够的训练数据量下MLP能够收敛到线性函数。
+定理2（泛化的条件）：令$g(\pmb{x})=\pmb{\beta}^T\pmb{x}$表示待拟合的目标函数，$\pmb{\beta}\in\mathbb{R}^d$。假设$\{\pmb{x}_i\}_{i=1}^n$从域$\mathcal{D}$中采样，其中$\mathcal{D}$包含一个连通的子集$S$，满足对任意非零向量$\pmb{w}\in\mathbb{R}^d$，存在$k&amp;gt;0$使得$k\pmb{w}\in S$。若在NTK机制下，使用均方误差在$\{({\pmb{x}}_i,y_i)\}_{i=1}^n$上训练一个两层ReLU MLP，$f(\pmb{x})\xrightarrow{p}\pmb{\beta}^T\pmb{x}$在$n\to\infty$时成立，即$f$依概率收敛到$g$。</description>
+    </item>
+    
+    <item>
+      <title>Stochastic Blockmodels</title>
+      <link>https://yliuhz.github.io/blogs/posts/sbm/</link>
+      <pubDate>Wed, 21 Jun 2023 15:58:20 +0800</pubDate>
+      
+      <guid>https://yliuhz.github.io/blogs/posts/sbm/</guid>
+      <description>本文基于 ( Citation: Karrer&amp;#32;&amp;amp;&amp;#32;Newman,&amp;#32;2011 Karrer,&amp;#32; B.&amp;#32;&amp;amp;&amp;#32;Newman,&amp;#32; M. &amp;#32; (2011). &amp;#32;Stochastic blockmodels and community structure in networks. Physical Review E,&amp;#32;83(1).&amp;#32;016107. https://doi.org/10.1103/PhysRevE.83.016107 ) 介绍社区发现中经典的随机块模型。 随机块模型是一种生成模型，它建模了社区与图生成之间的联系。尽管简单，随机块模型可以生成非常多样的图结构，包括同配图和异配图。
+经典的随机块模型 考虑一个无向的多重图$G$，其中两个顶点之间的连边个数可以超过$1$。令$A_{ij}$表示图的邻接矩阵，当$i\neq j$时$A_{ij}$表示顶点$i$和$j$之间的连边个数，$i=j$时表示自环个数的2倍。 随机块模型假设不同边之间符合独立同泊松分布($P(x=k)=\frac{\lambda^k}{k!}\exp(-\lambda)$，期望为$\lambda$)。令$w_{rs}$表示社区$r$内的顶点和$s$内的顶点之间的期望连边个数，$\frac{1}{2}w_{rr}$表示社区$r$内部顶点之间的期望连边个数。令$g_i$表示顶点$i$的社区标签。拥有上述符号和独立性假设，我们可以写出图$G$的似然函数，即将所有边的存在概率相乘:
+$$P(G|w,g)=\prod_{i&amp;lt;j}\frac{(w_{g_ig_j})^{A_{ij}}}{A_{ij}!}\exp(-w_{g_ig_j})\times \prod_i\frac{(\frac{1}{2}w_{g_ig_i})^{A_{ii}/2}}{(A_{ii}/2)!}\exp\left(-\frac{1}{2}w_{g_ig_i}\right)$$
+做合并可以得到等价的表达：
+$$P(G|w,g)=\frac{1}{\prod_{i&amp;lt;j}A_{ij}!\prod_i2^{A_{ii}/2}(A_{ii}/2)!}\prod_{rs}w_{rs}^{m_{rs}/2}\exp\left(-\frac{1}{2}n_rn_sw_{rs}\right)$$
+其中$n_r$表示社区$r$内的顶点个数，$m_{rs}=\sum_{ij}A_{ij}\delta_{g_i,r}\delta_{g_j,s}$表示社区$r$和$s$之间的合计边个数，或者在$r=s$时等于该数值的二倍。
+给定观测到的图结构，我们希望$w_{rs}$和$g_i$能够最大化这个似然函数。对似然函数取对数，并忽略掉与$w_{rs}$和$g_i$无关的常数(即前面带有$A_{ij}$的分式)，得到：
+$$\log P(G|w,g)=\sum_{rs}(m_{rs}\log w_{rs}-n_rn_sw_{rs})$$
+首先对$w_{rs}$求导，$\frac{\partial \log P}{\partial w_{rs}}=\sum_{rs}\left(\frac{m_{rs}}{w_{rs}}-n_rn_s\right)=0$，得到$w$的最优解：
+$$\hat{w}_{rs}=\frac{m_{rs}}{n_rn_s},\forall r,s$$
+将$\hat{w}_{rs}$带回对数似然，得到$\log P(G|\hat{w},g)=\sum_{rs}m_{rs}\log(m_{rs}/n_rn_s)-2m$，其中$m=\frac{1}{2}\sum_{rs}m_{rs}$表示图中所有连边的个数，与$g_i$无关可以丢掉，因此可以得到最终的对数似然优化目标：
+$$\mathcal{L}(G|g)=\sum_{rs}m_{rs}\log\frac{m_{rs}}{n_rn_s}$$
+所以，随机块模型定义了一个对数似然。 接下来，我们可以使用各种方法从$K^N$空间中采样$g$，并取使得$\mathcal{L}$最大的$g$作为社区发现的输出。
+采样方法（社区发现方法） 方法1 ( Citation: Karrer&amp;#32;&amp;amp;&amp;#32;Newman,&amp;#32;2011 Karrer,&amp;#32; B.&amp;#32;&amp;amp;&amp;#32;Newman,&amp;#32; M. &amp;#32; (2011). &amp;#32;Stochastic blockmodels and community structure in networks. Physical Review E,&amp;#32;83(1).&amp;#32;016107. https://doi.org/10.1103/PhysRevE.83.016107 ) 中用自然语言描述了采样$g$的方法。首先随机地将图划分为$K$个社区（注意这里假设$K$是已知的）。接下来不断地将顶点移动到另一个使得$\mathcal{L}$增长最大的社区，或者减少最少的社区。当所有顶点移动一次后，检查移动过程中的$\mathcal{L}$值，取对应最大$\mathcal{L}$的移动结果作为下一次循环的开始状态。当$\mathcal{L}$无法被增长时算法停止。作者发现使用不同的随机种子多运行几次取最佳（$\mathcal{L}$最大的结果？）能够得到最好的结果。</description>
+    </item>
+    
+    <item>
+      <title>Structural Community Detection</title>
+      <link>https://yliuhz.github.io/blogs/posts/cd/</link>
+      <pubDate>Mon, 19 Jun 2023 10:55:48 +0800</pubDate>
+      
+      <guid>https://yliuhz.github.io/blogs/posts/cd/</guid>
+      <description>本文专注于解释社区发现的两个经典算法：Louvain方法和Infomap方法。
+问题定义 给定一个图$G=(V,E)$，找到一个映射$g:V\to {1,2,\cdots,K}$，$g$将图中的顶点映射到社区标签。
+Louvain方法 Louvain方法 ( Citation: Blondel,&amp;#32;Guillaume &amp;amp; al.,&amp;#32;2008 Blondel,&amp;#32; V.,&amp;#32; Guillaume,&amp;#32; J.,&amp;#32; Lambiotte,&amp;#32; R.&amp;#32;&amp;amp;&amp;#32;Lefebvre,&amp;#32; E. &amp;#32; (2008). &amp;#32;Fast unfolding of communities in large networks. Journal of Statistical Mechanics: Theory and Experiment,&amp;#32;2008(10).&amp;#32;P10008. https://doi.org/10.1088/1742-5468/2008/10/P10008 ) 是一种贪心算法，其优化目标是模块度，如下式所示：
+$$Q=\frac{1}{2m}\sum_{i,j}\left[A_{ij}-\frac{k_ik_j}{2m}\right]\delta(c_i,c_j)$$
+其中$A_{ij}$表示顶点$i$和顶点$j$之间连边的权重；$k_i=\sum_jA_{ij}$表示与顶点$i$相连的边的权重之和；$c_i$表示顶点$i$的社区标签；$\delta(u,v)$在$u=v$时等于1，否则等于0；$m=\frac{1}{2}\sum_{ij}A_{ij}$。
+Louvain算法分为两阶段。
+初始时设定每个顶点独立属于一个社区 # 第一阶段 生成一个随机的顶点序列Queue For each node i in Queue: For each neighbor j of i: 尝试将i的社区标签c_i修改为j的社区标签c_j 计算模块度的增长DQ If max(DQ)&amp;gt;0: 修改i的社区标签 Else: 保持i的社区标签不变 # 第二阶段 For each community c_i in G: 将社区标签为c_i的所有顶点聚合为一个新的顶点 原c_i内的连边转化为新顶点的自环，边权为原边权之和 原c_i内顶点与另一社区c_j内顶点的所有连边聚合为一条连边，边权为原边权之和 # 重新执行第一阶段，直到模块度Q不再增加 第一阶段中顶点序列的顺序会影响算法的输出。作者发现不同的顶点处理顺序会影响算法的时间效率，但不会对最终的模块度造成过大（significant）的影响。</description>
+    </item>
+    
+    <item>
+      <title>GNN and MLP</title>
       <link>https://yliuhz.github.io/blogs/posts/gnn2mlp/</link>
       <pubDate>Thu, 08 Jun 2023 16:37:51 +0800</pubDate>
       
       <guid>https://yliuhz.github.io/blogs/posts/gnn2mlp/</guid>
-      <description>最近发现一篇ICLR2023 spotlight的蒸馏GNN到MLP的论文，觉得很新鲜。向前追溯发现其是基于ICLR2022的GLNN做的，遂在这里整理一下相关内容和自己的理解。
-Graph-less Neural Networks (GLNN) 作者 ( Citation: Zhang,&amp;#32;Liu &amp;amp; al.,&amp;#32;2022 Zhang,&amp;#32; S.,&amp;#32; Liu,&amp;#32; Y.,&amp;#32; Sun,&amp;#32; Y.&amp;#32;&amp;amp;&amp;#32;Shah,&amp;#32; N. &amp;#32; (2022). &amp;#32;Graph-less Neural Networks: Teaching Old MLPs New Tricks via Distillation. https://doi.org/10.48550/arXiv.2110.08727 ) 指出现实场景难以落地GNN的一大原因是GNN的推理速度很慢。假设图中平均的顶点度为$R$，那么对于一个$L$层GNN的网络，总共需要提取(fetch)$O(R^L)$次邻居和自己的节点特征。如下图所示。该指数量级的提取次数导致GNN的推理时间随层数增加而指数上升。 另一方面，多层感知机MLP由于不需要图结构作为输入，因此无需提取其他节点的特征，推理速度是线性的。
-为了节省推理时间，直接使用MLP在图上训练也是不可行的，因为丢掉了图结构信息。为了达到MLP的推理时间同时尽量保留图的结构信息，作者提出了从GNN蒸馏知识到MLP的方法，并验证了其有效性。
-解决框架 GLNN的结构容易理解，先训练一个笨重的GNN模型作为教师模型，再使用该GNN的输出$\mathbf{z}_v$以及带标签节点本身的标签$\mathbf{y}_v$训练简单的MLP学生网络。在归纳式学习(inductive learning)场景中， 当新的节点到来时，不再考虑其与训练图结构的连边，而是直接输入到MLP中做推理。 如下图所示。
-作者对于直推式和归纳式的详细描述： 可以看到测试时MLP和GLNN的学生网络是没有图结构输入的，只有测试顶点的特征向量。 同时，在测试教师网络GNN的归纳式推理时，只使用训练集图结构训练，而在测试时使用了包括测试顶点在内的整张图作为输入。这样对比是公平的。因为在使用GNN模型推理时我们会尽可能发挥模型的性能，为模型提供尽可能多的信息（见代码 official code）。
-训练学生网络时使用的损失函数为
-$$\mathcal{L}=\lambda\sum_{v\in\mathcal{V}^L}\mathcal{L}_{label}(\hat{\mathbf{y}}_v,\mathbf{y}_v)+(1-\lambda)\sum_{v\in\mathcal{V}}\mathcal{L}_{teacher}(\hat{\mathbf{y}}_v,\mathbf{z}_v)$$
-其中$\mathcal{L}_{label}$为交叉熵损失，$\mathcal{L}_{teacher}$为KL散度损失，$\lambda\in[0,1]$是超参数，$\mathcal{V}^L$表示带标签的训练节点，$\mathcal{V}$表示所有训练节点。$\mathcal{L}_{teacher}$的含义是使学生网络输出的分布与教师网络的输出分布相近。
-实验 作者做了大量的实验，包括直推式(transductive)的推理、归纳式(inductive)的推理，与其他GNN加速方法做了比较，通过一个参量(min-cut loss)验证蒸馏的有效性，验证GLNN的表达能力(理论推导)，分析了GLNN失败的场景。参数实验（消融实验）中验证了特征中加噪声的影响，归纳式推理时不同训练测试划分的影响，以及使用其他教师网络模型的情况。在附录部分还加了在异配图（NON-HOMOPHILY）上的实验，并更加详细地分析了节点特征噪声对GLNN的影响。
-作者指出虽然现实场景中大多是归纳式推理，但直推式推理的实验仍然是有意义的(附录A.5)。第一，大多数现有GNN文献使用的是直推式的推理，为了公平对比。第二，直推式推理相对简单，因为在训练时看到了测试节点的特征。只有直推式能够work才能接着考虑更有挑战性的归纳式推理。第三，因为半监督训练时使用的标签很少，如pubmed数据集只有每个类别20个共60个标签，作者希望尽可能使用更多无标签节点提升性能。在现实场景中，当有很多无标签节点需要推理时，同样可以把它们拿来训练，然后用另一组不同的带标签测试节点做评测。
-在附录J中，作者详细讨论了使用噪声扰动节点特征的实验结果(如下图Left)。发现2点：
-当节点特征为纯高斯噪声($\alpha=1$)时，原始GNN仍然相对较好； 当节点特征为纯高斯噪声($\alpha=1$)时，蒸馏的GLNN比纯训练MLP好。 觉得这两个结果特殊是因为作者在正文5.8简单分析了什么情况下GLNN会失效，通过互信息：
-$$I(G;y_i)=I(X^{[i]},\mathcal{E}^{[i]};y_i)=I(\mathcal{E}^{[i]};y_i)+I(X^{[i]};y_i|\mathcal{E}^{[i]})$$
-最小化$\mathcal{L}_{label}$相当于在最大化$I(G;y_i)$。在上式中，$I(\mathcal{E}^{[i]};y_i)$表示边与节点标签的互信息，这是MLP无法访问到的。因此MLP只能最大化第二项$I(X^{[i]};y_i|\mathcal{E}^{[i]})$。然而，当节点的标签与特征无关时，比如节点的标签表示节点的度或者节点是否构成一个三角形，此时MLP和GLNN的学生网络都无法学到单单从节点特征到标签的映射$f$。这样分析的话上面的第2条实验结果就有点奇怪。
-作者在附录J首先分析了为什么GNN在随机节点特征数据上仍然表现良好：过拟合。假设有一个A,B,C,D共4个顶点构成的全连接图(clique)，以及只与D相连的顶点E。令A,B,C,D的节点特征为纯高斯噪声，且具有相同的标签c。现在使用B,C,D,E训练GNN，A用作归纳测试。假设使用1层GNN。由于B,C,D内部的连边过于稠密，导致聚合邻居后B,C,D的表征十分地接近，而E对D的影响则十分小。因此模型会过拟合地将B,C,D的特征映射到标签c。当使用A做测试时，同样的聚合操作导致A与B,C,D十分接近，因此会输出相同的标签c，从而导致分类正确（GNN归纳式推理时使用全部邻接矩阵作为输入）。总的来说，如果A与许多具有相同标签的训练邻居稠密连接，那么就可能训练出一个过拟合的分类器，直接将其映射到相同的标签。
-第二分析了为什么GLNN的学生网络好于MLP：测试集标签的不平衡。按照现有的训练/测试集划分，训练集的节点标签是均衡的，而测试集可能是不均衡的。结果是，MLP的预测也相对均衡，而GLNN可以从教师网络的soft labels中学习，因此GLNN的预测标签分布与真实的不平衡标签分布更加相似。如下图所示。
-NOise-robust Structure-aware MLPs On Graphs (NOSMOG) 解决的问题和框架基本和GLNN相同，作者 ( Citation: Tian,&amp;#32;Zhang &amp;amp; al.</description>
+      <description>最近发现一篇ICLR2023 spotlight的蒸馏GNN到MLP的论文 ( Citation: Tian,&amp;#32;Zhang &amp;amp; al.,&amp;#32;2023 Tian,&amp;#32; Y.,&amp;#32; Zhang,&amp;#32; C.,&amp;#32; Guo,&amp;#32; Z.,&amp;#32; Zhang,&amp;#32; X.&amp;#32;&amp;amp;&amp;#32;Chawla,&amp;#32; N. &amp;#32; (2023). &amp;#32;NOSMOG: Learning Noise-robust and Structure-aware MLPs on Graphs. https://doi.org/10.48550/arXiv.2208.10010 ) ，觉得很新鲜。向前追溯发现其是基于ICLR2022的GLNN ( Citation: Zhang,&amp;#32;Liu &amp;amp; al.,&amp;#32;2022 Zhang,&amp;#32; S.,&amp;#32; Liu,&amp;#32; Y.,&amp;#32; Sun,&amp;#32; Y.&amp;#32;&amp;amp;&amp;#32;Shah,&amp;#32; N. &amp;#32; (2022). &amp;#32;Graph-less Neural Networks: Teaching Old MLPs New Tricks via Distillation. https://doi.org/10.48550/arXiv.2110.08727 ) 做的，遂在这里整理一下相关内容和自己的理解。
+Graph-less Neural Networks (GLNN) 作者 ( Citation: Zhang,&amp;#32;Liu &amp;amp; al.,&amp;#32;2022 Zhang,&amp;#32; S.,&amp;#32; Liu,&amp;#32; Y.,&amp;#32; Sun,&amp;#32; Y.</description>
     </item>
     
     <item>
@@ -43,7 +113,7 @@ NOise-robust Structure-aware MLPs On Graphs (NOSMOG) 解决的问题和框架基
       
       <guid>https://yliuhz.github.io/blogs/posts/diffusion/</guid>
       <description>So why diffusion models perform well?
-When \(a \ne 0\), there are two solutions to \(ax^2 + bx + c = 0\) and they are \[x = {-b \pm \sqrt{b^2-4ac} \over 2a}.\] $a^2$
+$a^2$
 $$b^2$$</description>
     </item>
     
@@ -59,7 +129,6 @@ $p(\mathbf{z})$: 先验分布 $p(\mathbf{x}|\mathbf{z})$: 解码器 $p(\mathbf{z
 这里使用KL散度衡量两个分布的距离，即$D_{KL}(q(\mathbf{z}|\mathbf{x})||p(\mathbf{z}|\mathbf{x}))$。注意KL散度不具有对称性，原博主Lilian Weng甚至指出了为什么不使用$D_{KL}(p(\mathbf{z}|\mathbf{x})||q(\mathbf{z}|\mathbf{x}))$。
 具体来说，前向KL散度$D_{KL}(p||q)=\mathbb{E}_{\mathbf{z}\sim p(\mathbf{z})}\log \frac{p(\mathbf{z})}{q(\mathbf{z})}=\int p(\mathbf{z})\log \frac{p(\mathbf{z})}{q(\mathbf{z})}d\mathbf{z}$中，p&amp;gt;0的位置要求q必须同时&amp;gt;0(因为$\lim_{q\to 0}p\log \frac{p}{q}\to \infty$)。因此优化前向KL散度会导致q覆盖了每个p分布概率不为0的点。反过来，我们这里使用的反向KL散度$D_{KL}(q||p)=\mathbb{E}_{\mathbf{z}\sim q(\mathbf{z})}\log \frac{q(\mathbf{z})}{p(\mathbf{z})}=\int q(\mathbf{z})\log \frac{q(\mathbf{z})}{p(\mathbf{z})}d\mathbf{z}$，在p=0时保证了q必须=0。
 前向KL散度：p&amp;gt;0时q&amp;gt;0，可能导致q平铺在p&amp;gt;0的区域 反向KL散度（使用的）：p=0时q=0，可能导致q被挤压在p的一个峰上 在推导KL散度的表达式时就可以得到变分自编码器的损失函数ELBO。
-(图源Lilian Weng的博客：https://lilianweng.github.io/posts/2018-08-12-vae/)
 我们想同时极大化观测数据点$\mathbf{x}$的似然，以及真假编码器的分布差距，即最大化 $$\mathbb{E}_{\mathbf{z}\sim q(\mathbf{z}|\mathbf{x})}\log p(\mathbf{x}|\mathbf{z})-D_{KL}(q(\mathbf{z}|\mathbf{x})||p(\mathbf{z}))$$ 左边的是重构误差取反，右边的在先验分布为正态分布时可以显式展开。
 在计算重构误差时用到了重参数技巧（reparameterization trick），即把从一个带参数的编码器采样$\mathbf{z}$，转化为从一个确定的分布（如标准正态）采样一个值，再通过将采样的值与编码器的输出（均值和方差）加减乘除得到$\mathbf{z}$。这样梯度就和采样独立开来，可以反向传播了。</description>
     </item>
@@ -84,7 +153,7 @@ Flash-attention的思路：分块在高速on-chip显存上增量式计算，避�
 对两个向量的拼接$[\mathbf{x},\mathbf{y}]$计算softmax：$\sigma([\mathbf{x},\mathbf{y}])=[\exp(\mathbf{x}),\exp(\mathbf{y})]/(\sum_i\exp(\mathbf{x}_i)+\sum_j\exp(\mathbf{y}_j))$
 设$l(\mathbf{x})=\sum_i\exp(\mathbf{x}_i)$，则$\sigma([\mathbf{x},\mathbf{y}])=[\exp(\mathbf{x}),\exp(\mathbf{y})]/(l(\mathbf{x})+l(\mathbf{y}))$
 将$\mathbf{Q,O},l$分成$T_r$块，将$\mathbf{K,V}$分成$T_c$块，进行二重循环。
-for j in 1...T_c: 取出K_j和V_j for i in 1...T_r: 取出Q_i,O_i和l_i 计算当前块内的self-attention，即：
+1 2 3 4 for j in 1...T_c: 取出K_j和V_j for i in 1...T_r: 取出Q_i,O_i和l_i 计算当前块内的self-attention，即：
 $\mathbf{S}_{ij}=\mathbf{Q}_i\mathbf{K}_j^T$
 $\mathbf{P}_{ij}=\exp(\mathbf{S}_{ij})$
 $l_{ij}=\text{rowsum}(\mathbf{P}_{ij})$
@@ -96,8 +165,7 @@ $\mathbf{O}_i=\mathbf{O}_i*l_i/l_i^{new} + \mathbf{O}_{ij}$
 论文中的Algorithm1由于考虑了算术稳定性防止\exp得到过大的值，在softmax前减去了最大值m，因此看起来更复杂。
 发散QA Q1. Algorithm 1中的i、j循环可以交换吗？github
 A1. 如下可以，结果仍然保证Flash-Attention得到的是精确的$\mathbf{O}$。但显然增加了$\mathbf{K}_j$和$\mathbf{V}_j$的IO次数。
-for i in 1...T_r: for j in 1...T_c: 取出K_j和V_j 取出Q_i,O_i和l_i ... 更新O_i和l_i 如下不可以。
-for i in 1...T_r: 取出Q_i,O_i和l_i for j in 1...T_c: 取出K_j和V_j ... 更新O_i和l_i Q2.</description>
+1 2 3 4 5 6 7 8 for i in 1...T_r: for j in 1...T_c: 取出K_j和V_j 取出Q_i,O_i和l_i ... 更新O_i和l_i 如下不可以。</description>
     </item>
     
   </channel>

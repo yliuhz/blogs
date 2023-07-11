@@ -1,0 +1,7 @@
+:root {
+    --hljs-bg: #F7F8FA;
+}
+
+.dark {
+    --hljs-bg: #2e2e33;
+}
