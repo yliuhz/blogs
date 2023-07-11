@@ -114,7 +114,7 @@ Andrej Karpathy在一个[colab notebook](https://colab.research.google.com/drive
 
 ### Nano-GPT模型概览
 
-我们已经了解了构建GPT所需的所有模块。
+我们已经了解了构建GPT所需的所有模块。接下来小结一下GPT的预训练流程。
 
 ```Python
 class GPTLanguageModel(nn.Module):
@@ -150,3 +150,5 @@ class GPTLanguageModel(nn.Module):
         return logits, loss
     ...
 ```
+
+首先采样一个batch的训练数据，规格为$B\times T$，每个位置的元素表示单词在词表中的下标，训练数据的标签为输入数据在句子中向后错一位的句子片段；接着讲数据输入到模型中。Nano-GPT采用查表获取单词的表征，规格为$B\times T\times C$，并为句子片段中的$T$个位置通过查表得到位置编码，规格为$T\times C$，将单词表征和位置编码求和得到输入MHA的表征。接着，表征经过MHA、LayerNorm和输出头得到预测的标签logits。NanoGPT采用交叉熵损失训练。
