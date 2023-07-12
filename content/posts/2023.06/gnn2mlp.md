@@ -13,7 +13,7 @@ mathjax: true
 作者 {{< cite "dEMqP61a" >}} 指出现实场景难以落地GNN的一大原因是GNN的推理速度很慢。假设图中平均的顶点度为$R$，那么对于一个$L$层GNN的网络，总共需要提取(fetch)$O(R^L)$次邻居和自己的节点特征。如下图所示。该指数量级的提取次数导致GNN的推理时间随层数增加而指数上升。
 另一方面，多层感知机MLP由于不需要图结构作为输入，因此无需提取其他节点的特征，推理速度是线性的。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-06-08_16.43.02.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-06-08_16.43.02.png" />
 
 为了节省推理时间，直接使用MLP在图上训练也是不可行的，因为丢掉了图结构信息。为了达到MLP的推理时间同时尽量保留图的结构信息，作者提出了从GNN蒸馏知识到MLP的方法，并验证了其有效性。
 
@@ -23,12 +23,12 @@ GLNN的结构容易理解，先训练一个笨重的GNN模型作为教师模型�
 **当新的节点到来时，不再考虑其与训练图结构的连边，而是直接输入到MLP中做推理。**
 如下图所示。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-06-08_16.48.33.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-06-08_16.48.33.png" />
 
 
 作者对于直推式和归纳式的详细描述：
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-06-08_17.19.08.png" />
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-06-08_17.19.13.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-06-08_17.19.08.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-06-08_17.19.13.png" />
 可以看到测试时MLP和GLNN的学生网络是没有图结构输入的，只有测试顶点的特征向量。
 同时，在测试教师网络GNN的归纳式推理时，只使用训练集图结构训练，而在测试时使用了包括测试顶点在内的整张图作为输入。这样对比是公平的。因为在使用GNN模型推理时我们会尽可能发挥模型的性能，为模型提供尽可能多的信息（**见代码** [official code](https://github.com/snap-research/graphless-neural-networks/blob/76da5d1b5d8258d5ea9ae7d4fa63f6a20a47c27c/train_and_eval.py#L731-L736)）。
 
@@ -50,7 +50,7 @@ $$\mathcal{L}=\lambda\sum_{v\in\mathcal{V}^L}\mathcal{L}_{label}(\hat{\mathbf{y}
 1. 当节点特征为纯高斯噪声($\alpha=1$)时，原始GNN仍然相对较好；
 2. 当节点特征为纯高斯噪声($\alpha=1$)时，蒸馏的GLNN比纯训练MLP好。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-06-09_09.49.47.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-06-09_09.49.47.png" />
 
 
 觉得这两个结果特殊是因为作者在正文5.8简单分析了什么情况下GLNN会失效，通过互信息：
@@ -63,7 +63,7 @@ $$I(G;y_i)=I(X^{[i]},\mathcal{E}^{[i]};y_i)=I(\mathcal{E}^{[i]};y_i)+I(X^{[i]};y
 
 第二分析了为什么GLNN的学生网络好于MLP：**测试集标签的不平衡**。按照现有的训练/测试集划分，训练集的节点标签是均衡的，而测试集可能是不均衡的。结果是，MLP的预测也相对均衡，而GLNN可以从教师网络的soft labels中学习，因此GLNN的预测标签分布与真实的不平衡标签分布更加相似。如下图所示。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-06-08_20.54.42.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-06-08_20.54.42.png" />
 
 
 ## NOise-robust Structure-aware MLPs On Graphs (NOSMOG)
@@ -71,7 +71,7 @@ $$I(G;y_i)=I(X^{[i]},\mathcal{E}^{[i]};y_i)=I(\mathcal{E}^{[i]};y_i)+I(X^{[i]};y
 解决的问题和框架基本和GLNN相同，作者 {{< cite "49r47O4e" >}}针对GLNN存在的不足进行优化。两大卖点是标题中的对噪声的鲁棒和对图结构的感知。使用对抗学习解决噪声的干扰，效果如下图：
 
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-06-09_14.52.45.png" alt="image" width=50%/>
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-06-09_14.52.45.png" alt="image" width=50%/>
 
 
 
@@ -79,12 +79,12 @@ $$I(G;y_i)=I(X^{[i]},\mathcal{E}^{[i]};y_i)=I(\mathcal{E}^{[i]};y_i)+I(X^{[i]};y
 
 - GLNN 文中一个重要的结论是，对于现实中的属性图数据集，使用与GNN相同的参数量，**存在一组MLP的参数，由节点的特征向量映射到其类别标签而取得与GNN相近的准确率**，只是单单使用MLP以及标准的随机梯度下降难以学习到这样的参数 (5.3节、5.6节)。这表明节点的特征向量本身具有足够多的信息。这启发了后续KDD2022的GraphMAE {{< cite "6iMLCeK9" >}} 构建重构特征的图自编码器。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-06-13_15.17.19.png" width=80% class="center"/>
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-06-13_15.17.19.png" width=80% class="center"/>
 
 - ICLR2023 还有一篇联系GNN与MLP的文章 {{< cite "ByADi6ga" >}}。与GLNN不同，PMLP {{< cite "ByADi6ga" >}} 在训练时采用MLP架构，而在测试时重新添加信息传递(message passing, MP)操作，同样取得了与GNN相近的准确率。测试时MP添加的位置和次数可以自主设定。作者在与不同的原始GNN架构对比时使用了不同的PMLP测试架构。如下图所示 (来源于作者的报告: [bilibili](https://www.bilibili.com/video/BV1uh4y1G794/?spm_id_from=333.999.0.0&vd_source=5bc35454eb5381b6bccf1051510ae36a))。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-06-13_11.38.14.png" width=80% class="center"/>
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-06-13_11.38.26.png" width=80% class="center"/>
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-06-13_11.38.14.png" width=80% class="center"/>
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-06-13_11.38.26.png" width=80% class="center"/>
 
 - 还有研究者整理了近期GNN&MLP的论文在[Github](https://github.com/wutaiqiang/awesome-GNN2MLP-distillation)。
 

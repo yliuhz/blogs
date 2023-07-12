@@ -33,7 +33,7 @@ bibFile: bib/bib.json
 
 SUBLIME {{< cite "14nyanSAU" >}} 将学习到的图结构视作一种**数据增强**，与原图进行多视角的对比学习。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-06-27_10.22.17.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-06-27_10.22.17.png" />
 
 - **锚点视角（教师）**：对于输入带有邻接矩阵$A$的结构修改任务，直接使用输入的$A$作为锚点；对于输入不带邻接矩阵的结构推理任务，使用单位矩阵$I$作为锚点。节点特征使用输入特征$X$。
 - **结构学习器视角（学生）**：使用结构学习器的输出作为该视角。节点特征使用输入特征$X$。

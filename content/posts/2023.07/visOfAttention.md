@@ -27,11 +27,11 @@ You are all resolved rather to die than to famish?
 
 它是由字符组成的，我们需要一个映射，将其转化为模型可接受的数字向量的输入格式。首先将句子进行分词，然后建立词表，再将每个单词映射到词表的索引。这样，我们可以构建GPT的dataloader：对于给定超参数batch_size=$B$，同时给定句子片段长度$T$，dataloader可以定义为从数据中随机采样$B$个连续的长度为$T$的句子片段，来得到一个batch的数据。如下图所示。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/attn.png" width=70%/>
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/attn.png" width=70%/>
 
 接着定义模型架构。这里采用经典的Transformer架构 {{< cite "3suxKdnN" >}}。如下图所示。Transformer由左侧的编码器和右侧的解码器构成，GPT采用纯解码器结构，所以这里只考虑右侧。它由N个块组成，每个块内包含了(Masked) Multi-head Attention、Add & Norm和FFN前馈网络。其中，Multi-head Attention是由多个attention块拼接起来的核心架构；Add & Norm指residual connections和layernorm，用于模型的优化；FFN是常见的全连接网络。因此，首先关注核心的attention块。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-07-10_19.32.58.png" width=50%/>
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-07-10_19.32.58.png" width=50%/>
 
 ### Self-Attention 自注意力机制
 
@@ -151,7 +151,7 @@ class GPTLanguageModel(nn.Module):
     ...
 {{< /highlight >}}
 
-首先采样一个batch的训练数据，规格为$B\times T$，每个位置的元素表示单词在词表中的下标，训练数据的标签为输入数据在句子中向后错一位的句子片段；接着讲数据输入到模型中。Nano-GPT采用查表获取单词的表征，规格为$B\times T\times C$，并为句子片段中的$T$个位置通过查表得到位置编码，规格为$T\times C$，将单词表征和位置编码求和得到输入MHA的表征。接着，表征经过MHA、LayerNorm和输出头得到预测的标签logits。NanoGPT采用交叉熵损失训练。
+首先采样一个batch的训练数据，规格为$B\times T$，每个位置的元素表示单词在词表中的下标，训练数据的标签为输入数据在句子中向后错一位的句子片段；接着将数据输入到模型中。Nano-GPT采用查表获取单词的表征，规格为$B\times T\times C$，并为句子片段中的$T$个位置通过查表得到位置编码，规格为$T\times C$，将单词表征和位置编码求和得到输入MHA的表征。接着，表征经过MHA、LayerNorm和输出头得到预测的标签logits。NanoGPT采用交叉熵损失训练。
 
 ### 利用NanoGPT生成文本
 

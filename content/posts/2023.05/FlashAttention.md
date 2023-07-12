@@ -64,7 +64,7 @@ $\mathbf{O}\_i'=\mathbf{P}_{ij}\mathbf{V}_j$
 然后需要对上一轮的$\mathbf{O_i}$和$l_i$进行更新，以d=1为例。
 
 <!-- ![image](https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/image-20230518194619599.png) -->
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/image-20230518194619599.png" alt="image" width=50%/>
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/image-20230518194619599.png" alt="image" width=50%/>
 
 
 $l_i^{new}=l_i+l_{ij}$比较直接

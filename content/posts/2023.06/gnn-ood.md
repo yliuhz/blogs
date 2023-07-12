@@ -35,14 +35,14 @@ $$\begin{aligned}\pmb{h}\_u^{(k)}&=\sum_{v\in\mathcal{N}(u)}\text{MLP}^{(k)}(\pm
 
 作者用下图呈现MLPs的泛化方式。灰色表示MLPs要学习的真实函数，蓝色和黑色分别表示模型在训练集和测试集上的预测。可以看到模型可以拟合训练集上的非线性函数，但脱离训练集后迅速变为线性函数。用数字来说，脱离训练集后MLPs预测的决定系数大于$0.99$。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-06-26_20.54.05.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-06-26_20.54.05.png" />
 
 **定理1**（线性泛化）：假设在NTK机制下使用均方误差训练了一个两层MLP：$f:\mathbb{R}^d\to\mathbb{R}$。对于任意方向$\pmb{v}\in\mathbb{R}^d$，令$\pmb{x}_0=t\pmb{v}$，那么当$t\to\infty$时，$f(\pmb{x}_0+h\pmb{v})-f(\pmb{x}_0)\to\beta_vh$对任意的$h>0$成立，$\beta_v$是常数。进一步地，给定$\epsilon>0$，对于$t=O(\frac{1}{\epsilon})$，$|\frac{f(\pmb{x}_0+h\pmb{v})-f(\pmb{x}_0)}{h}-\beta_v|<\epsilon$。
 
 定理1说明了在训练数据集以外，ReLU MLPs可以拟合几乎线性的函数。对于二次函数（$\pmb{x}^TA\pmb{x}$）、余弦函数($\sum_{i=1}^d\cos(2\pi\cdot\pmb{x}^{(i)})$)、根次函数（$\sum_{i=1}^d\sqrt{\pmb{x}^{(i)}}$）等，ReLU MLPs不能泛化。
 在合适的超参数下，MLPs可以正确地泛化L1范数，与定理1一致。如下图所示。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-06-30_11.13.51.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-06-30_11.13.51.png" />
 
 ### ReLU MLPs什么时候一定（provably）可以泛化
 
@@ -62,7 +62,7 @@ $$\begin{aligned}\pmb{h}\_u^{(k)}&=\sum_{v\in\mathcal{N}(u)}\text{MLP}^{(k)}(\pm
 
 以上讨论都基于使用ReLU激活函数的MLPs。除了ReLU，还有$\tanh(x),\cos(x),x^2$等激活函数。作者发现，在激活函数和待拟合的目标函数相近时，MLPs的泛化性能较好。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-07-03_15.36.11.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-07-03_15.36.11.png" />
 
 ## 图神经网络GNNs如何泛化
 
@@ -127,11 +127,11 @@ $$\pmb{w}_{(u,v)}^{(t)}=m_v\cdot\frac{\pmb{x}_v^{(t)}-\pmb{x}_u^{(t)}}{\parallel
 
 这样MLP只需要学习一个线性函数，从而提高了泛化能力。如下图(b)所示。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-07-04_11.59.54.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-07-04_11.59.54.png" />
 
 作者还发现训练图的结构也会对GNN的泛化能力造成影响，不同的任务中GNN更“喜欢”不同结构的训练图。如下图所示。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-07-04_11.59.59.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-07-04_11.59.59.png" />
 
 ## 本文与其他分布外问题设置的联系
 

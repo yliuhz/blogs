@@ -28,13 +28,13 @@ katex: true
 - 前向KL散度：p>0时q>0，可能导致q平铺在p>0的区域
 - 反向KL散度（使用的）：p=0时q=0，可能导致q被挤压在p的一个峰上
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/forward_vs_reversed_KL.png"/>
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/forward_vs_reversed_KL.png"/>
 
 
 
 在推导KL散度的表达式时就可以得到变分自编码器的损失函数ELBO。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-05-23_20.26.52.png" width=80%/>
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-05-23_20.26.52.png" width=80%/>
 <p align="center" style="color:grey">(图源Lilian Weng的博客：https://lilianweng.github.io/posts/2018-08-12-vae/)</p>
 
 我们想同时极大化观测数据点$\mathbf{x}$的似然，以及真假编码器的分布差距，即最大化

@@ -155,7 +155,7 @@ $$
 
 其中$\gamma$越大会生成结构越同配（assortative）的图结构，$w_0$控制了图的稀疏程度。实验中，$\gamma$取$10$，$w_0$取$0.01$，顶点度序列$\\{k_i\\}$由参数为$2.5$的指数分布生成，社区个数为$2$，每个社区包含$10$个顶点。使用MCMC方法（采样方法2）进行采样。在$20$次采样中，模型只有$1$次收敛到同配的局部最优解，其余$19$次均收敛到异配的局部最优解。如下图所示。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-07-05_10.52.32.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-07-05_10.52.32.png" />
 
 ### 改进方法
 
@@ -207,11 +207,11 @@ $$\mathcal{L}(G|g,I,O)=\sum_{rs}m_{rs}\log\frac{m_{rs}}{\lambda_{rs}}-2\sum_ik_i
 
 首先是之前的$20$个顶点的合成数据集的对比。可以发现使用正则随机块模型后，$20$次MCMC均收敛到同配的社区结构。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-07-05_12.09.17.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-07-05_12.09.17.png" />
 
 在Karate club network 真实数据集上，设定$\theta_i=k_i,f(k_i)=\max\\{f, \frac{1}{k_i}\\}$。使用不同的$f$可以控制输出社区的同配性。如下图所示。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-07-05_12.08.49.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-07-05_12.08.49.png" />
 
 ### RSBM的性质
 
