@@ -225,7 +225,7 @@ $$\sum_j\lambda_{ij}=k_i$$
 
 $$\mathcal{L}=D_{KL}(p_{degree}(r,s)||p_{null}(r,s))-2\mathbb{E}_{k_i}[H(\frac{k_i^+}{k_i})]$$
 
-## SBM的效率优化
+<!-- ## SBM的效率优化
 
 {{< cite "r7iuiKky" >}} 讨论了一种加速随机块模型的方法。
 
@@ -241,4 +241,69 @@ $$\mathcal{L}=D_{KL}(p_{degree}(r,s)||p_{null}(r,s))-2\mathbb{E}_{k_i}[H(\frac{k
 - 参数估计：即学习随机块模型的参数和隐藏变量。由于随机块模型含有隐藏变量，所以不能直接通过极大似然或极大后验估计模型参数，因此常使用EM算法，变分EM，变分贝叶斯EM，MCMC，信念传播，矩阵分解等方法。
 - 模型选择：即推断用于描述图的随机块模型的块的规模。常用方法有交叉验证，最短描述长度等。
 
-然而，上述方法往往不够高效，原因是模型选择的方法与模型是相关的，因此
+然而，上述方法往往不够高效，原因是模型选择的方法与模型是相关的，因此 -->
+
+## EM算法
+
+基于[维基百科](https://en.wikipedia.org/wiki/Expectation%E2%80%93maximization_algorithm)梳理EM算法（Expectation–Maximization）。EM算法是一种估计模型参数的方法。
+
+### 问题定义
+
+给定数据集$X$，一个参数为$\theta$的统计模型，统计模型假设$X$由隐变量$Z$生成。那么，数据集$X$的似然函数可以表示为
+
+$$L(\theta;X)=p(X|\theta)=\int p(X,Z|\theta)dZ=\int p(X|Z,\theta)p(Z|\theta)dZ$$
+
+直接最大化$L(\theta;X)$是不可行的，因为隐变量$Z$是未知的，得到$Z$之前需要先知道模型参数$\theta$。
+
+### EM算法流程
+
+EM算法分为两步：E步和M步。
+
+- E步：给定当前模型参数的估计$\theta^{(t)}$，定义
+
+$$Q(\theta|\theta^{(t)})=E_{Z\sim p(\cdot|X,\theta^{(t)})} [\log p(X,Z|\theta)]$$
+
+- M步：计算$\theta$使其最大化$Q(\theta|\theta^{(t)})$，即
+
+$$\theta^{(t+1)}=\text{argmax}_{\theta} [Q(\theta|\theta^{(t)})]$$
+
+可以看到，EM算法由优化MLE的目标$L(\theta;X)$改为优化$Q(\theta|\theta^{(t)})$。可以证明优化$Q(\theta|\theta^{(t)})$时$L(\theta;X)$也在被优化。
+
+### EM算法正确性的证明
+
+由贝叶斯定理，
+
+$$\log p(X|\theta)=\log p(X,Z|\theta)-\log p(Z|X,\theta)$$
+
+由$E[f(x)]=\sum p(x)f(x)$，在等式两边对Z求期望，左边对Z是常数，得
+
+$$
+\begin{align}
+\log p(X|\theta) &=\sum_Zp(Z|X,\theta^{(t)})\log p(X,Z|\theta)-\sum_Zp(Z|X,\theta^{(t)})\log p(Z|X,\theta) \\\
+&= Q(\theta|\theta^{(t)})+H(\theta|\theta^{(t)})
+\end{align}\label{eq:1}\tag{1}
+$$
+
+代入$\theta=\theta^{(t)}$，得
+
+$$
+\begin{align}
+\log p(X|\theta^{(t)})=Q(\theta^{(t)}|\theta^{(t)})+H(\theta^{(t)}|\theta^{(t)})
+\end{align}\label{eq:2}\tag{2}
+$$
+
+($\ref{eq:1}$)式减($\ref{eq:2}$)式，得
+
+$$\log p(X|\theta)-\log p(X|\theta^{(t)})=Q(\theta|\theta^{(t)})-Q(\theta^{(t)}|\theta^{(t)})+H(\theta|\theta^{(t)})-H(\theta^{(t)}|\theta^{(t)})$$
+
+注意到
+
+$$
+\begin{aligned}
+H(\theta|\theta^{(t)})-H(\theta^{(t)}|\theta^{(t)}) &=-\sum_Zp(Z|X,\theta^{(t)})\log\frac{p(Z|X,\theta)}{p(Z|X,\theta^{(t)})} \\\
+&= KL(p(Z|X,\theta^{(t)}) || p(Z|X,\theta)) \\\
+&\ge 0
+\end{aligned}
+$$
+
+因此$\log p(X|\theta)-\log p(X|\theta^{(t)})\ge Q(\theta|\theta^{(t)})-Q(\theta^{(t)}|\theta^{(t)})$，即MLE的似然至少增长了EM算法增长的数值。
