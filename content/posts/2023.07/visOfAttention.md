@@ -112,7 +112,7 @@ Andrej Karpathy在一个[colab notebook](https://colab.research.google.com/drive
 - Residual Connections：$\hat{\pmb{Y}}=\text{Proj}(\pmb{X})+\text{Proj}(\text{Softmax}(QK^T)V)\in\mathbb{R}^{T\times C'}$，其中$\text{Proj}$是线性映射，用于转换维度以确保能够相加。[视频](https://www.youtube.com/watch?v=kCc8FmEb1nY&t=4185s)中引用了[博客](https://towardsdatascience.com/residual-blocks-building-blocks-of-resnet-fd90ca15d6ec)。
 - LayerNorm：确保数据的每行具有$0$均值和$1$方差；与之正交的BatchNorm确保数据的每列具有$0$均值和$1$方差。
 
-### Nano-GPT模型概览
+### GPT模型概览
 
 我们已经了解了构建GPT所需的所有模块。接下来小结一下GPT的预训练流程。([代码来源](https://github.com/karpathy/ng-video-lecture/blob/52201428ed7b46804849dea0b3ccf0de9df1a5c3/gpt.py#L138))
 
@@ -153,6 +153,52 @@ class GPTLanguageModel(nn.Module):
 
 首先采样一个batch的训练数据，规格为$B\times T$，每个位置的元素表示单词在词表中的下标，训练数据的标签为输入数据在句子中向后错一位的句子片段；接着将数据输入到模型中。Nano-GPT采用查表获取单词的表征，规格为$B\times T\times C$，并为句子片段中的$T$个位置通过查表得到位置编码，规格为$T\times C$，将单词表征和位置编码求和得到输入MHA的表征。接着，表征经过MHA、LayerNorm和输出头得到预测的标签logits。NanoGPT采用交叉熵损失训练。
 
-### 利用NanoGPT生成文本
+### 利用GPT生成文本
 
 GPT是纯解码器模型，这意味着输入一句话，GPT能够帮我们续写成一段话。
+
+```Python
+...
+# GPTLanguageModel.generate
+def generate(self, idx, max_new_tokens):
+    # idx is (B, T) array of indices in the current context
+    for _ in range(max_new_tokens):
+        # crop idx to the last block_size tokens
+        idx_cond = idx[:, -block_size:]
+        # get the predictions
+        logits, loss = self(idx_cond)
+        # focus only on the last time step
+        logits = logits[:, -1, :] # becomes (B, C)
+        # apply softmax to get probabilities
+        probs = F.softmax(logits, dim=-1) # (B, C)
+        # sample from the distribution
+        idx_next = torch.multinomial(probs, num_samples=1) # (B, 1)
+        # append sampled index to the running sequence
+        idx = torch.cat((idx, idx_next), dim=1) # (B, T+1)
+    return idx
+```
+
+输入的`idx`的规格是$B\times T$，在生成时$B$需要设置成$1$。输入GPT后，返回$B\times T\times \text{vocab_size}$的logits输出，每个位置表示输入相应位置的下一个单词。对于生成来说，前$T$个单词已经在输入中存在，我们只关心$T$的下一个单词，所以取logits对最后一个单词的预测`logits[:,-1,:]`。接着，对其使用`softmax`函数归一化得到概率分布，然后从该概率分布中进行采样得到要预测的下一个单词。
+
+[很多GPT模型](https://github.com/karpathy/minGPT/blob/37baab71b9abea1b76ab957409a1cc2fbfba8a26/mingpt/model.py#L283)在生成函数中还会加入`temperature`参数，将截断后的`logits[:,-1,:]`除以`temperature`。由于`softmax`函数的特性，在`temperature`$>1$时，归一化后的分布会更均衡，对应的GPT的表现会更发散有创造力；当`temperature`$<1$时，归一化后的分布会更确定，采样的单词会更确定，对应的GPT的表现会更准确。([参考链接](https://www.linkedin.com/pulse/text-generation-temperature-top-p-sampling-gpt-models-selvakumar/#:~:text=Temperature%3A%20This%20parameter%20determines%20the%20creativity%20and%20diversity%20of%20the%20text%20generated%20by%20the%20GPT%20model.%20A%20higher%20temperature%20value%20(e.g.%2C%201.5)%20leads%20to%20more%20diverse%20and%20creative%20text%2C%20while%20a%20lower%20value%20(e.g.%2C%200.5)%20results%20in%20more%20focused%20and%20deterministic%20text.%C2%A0))
+类似地，还可以加入`topp`参数，将`logits[:,-1,:]`中概率小于`topp`的位置修改为`-inf`，这样在`softmax`归一化之后这些位置的概率变为$0$。GPT在输出时就完全不会考虑这些候选单词。
+
+```Python
+f = lambda x: np.exp(x) / np.sum(np.exp(x)) # softmax
+
+print(f(logits))
+logits = [0.10014858, 0.22968848, 0.17318473, 0.03110688, 0.46587133]
+
+# temperature = 5
+print(f(logits/5))
+logits = [0.18356056, 0.21670965, 0.20481055, 0.14528531, 0.24963393]
+
+# temperature = 0.5
+print(f(logits/0.5))
+logits = [0.03227246, 0.16975432, 0.09650763, 0.00311355, 0.69835204]
+
+# topp
+logits[0] = -np.inf
+print(f(logits))
+logits = [0.        , 0.25525156, 0.19245925, 0.0345689 , 0.51772029]
+```
