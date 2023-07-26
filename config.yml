@@ -1,6 +1,6 @@
 baseURL: "https://yliuhz.github.io/blogs" # if your site is in 'https', then make sure your base url isn't written using 'http' otherwise your sitemap would contain http (as opposeed to https) URLs. This would affect Google indexing of your URLs.
 title: LIU Yue's blogs
-paginate: 5
+paginate: 10
 theme: 
 - hugo-PaperModX
 - hugo-cite
@@ -14,6 +14,7 @@ enableEmoji: true
 pygmentsCodeFences: true
 pygmentsUseClasses: true
 # googleAnalytics: UA-123-45
+hasCJKLanguage: true
 
 
 minify:
@@ -34,13 +35,13 @@ menu:
   main:
     - name: Archive
       url: archives
-      weight: 5
+      weight: 1
     - name: Search
       url: search/
-      weight: 10
+      weight: 1
     - name: Tags
       url: tags/
-      weight: 10
+      weight: 1
     - name: "@Author"
       url: "https://yliuhz.github.io"
       params:
@@ -92,6 +93,7 @@ params:
     ShowCodeCopyButtons: true
     ShowPostNavLinks: true
     Email: yliuhz@outlook.com
+    
 
     profileMode:
         enabled: false
@@ -108,12 +110,9 @@ params:
 
     homeInfoParams:
         Title: "LIU Yue's blogs"
-        Content: >
-            Welcome to my personal blog. Any discussions are welcome. Reach me by yliuhz@outlook.com. \
+        Content: Welcome to my personal blog. Any discussions are welcome. Reach me by yliuhz@outlook.com. \
 
             欢迎来到我的个人博客！欢迎讨论！
-
-
     socialIcons:
         - name: github-simple
           url: "https://github.com/yliuhz/"
