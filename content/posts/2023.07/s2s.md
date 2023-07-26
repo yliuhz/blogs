@@ -80,7 +80,7 @@ LSTM对重复模块做了细致的设计。如下图所示。
 
 这种选择信息通过的机制叫做“门”（gate），通常由一个sigmoid层和一个点积操作组成。sigmoid函数的输出范围在0~1之间，当输出1时表示让所有信息通过，当输出0时表示拦截所有的信息。如下图所示。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/LSTM3-gate.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/LSTM3-gate.png" width=10%/>
 
 ### 一步步搞懂LSTM
 
