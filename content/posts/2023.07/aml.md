@@ -40,3 +40,13 @@ Ellipic是一家保护加密货币免受犯罪侵害的公司。Ellipic图数据
 除此之外，GCN等图神经网络能够直接在图结构上传播特征，也是不错的选择。
 
 在GCN的基础上，作者提出动态图神经网络EvolveGCN，将GCN与RNN结合。EvolveGCN对每个时间戳训练一个GCN，并使用序列神经网络将不同时间戳GCN的权重联系起来。
+
+### 实验
+
+作者发现，在顶点特征中加入一阶邻居信息，同时加入GCN得到的表征之后，随机森林能够取得最优的效果。如下表所示，其中AF和LF分别表示使用全部的166维特征和前94维特征，NE表示进一步拼接GCN输出的表征。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-07-26_20.56.57.png" />
+
+同时，所有方法在面对“黑市关闭”时都会失效。如下图所示，在t=43时黑市突然关闭，此时所有方法都会失效。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-07-26_20.57.07.png" />
