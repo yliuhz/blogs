@@ -20,7 +20,7 @@ bibFile: bib/bib.json
 
 现有方法有针对归纳式的实体推理进行研究，即预测训练时未出现的实体；但未针对关系的归纳式推理进行研究。如下图所示。
 
-<img src="iShot_2023-07-27_15.47.54.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-07-27_15.47.54.png" />
 
 本文考虑两种更现实的问题设置：
 
@@ -55,7 +55,7 @@ $$
 其中$D_h,D_t$分别表示$E_t,E_h$的度矩阵，即$D_h[i,i]=\sum_jE_h[i,j],D_t$同理。度矩阵起到对矩阵$A_h,A_t$中每个元素归一化的作用。
 这样，关系图的邻接矩阵定义为$A=A_h+A_t$。如下图所示。注意到生成的关系图并不是全连接图。
 
-<img src="iShot_2023-07-27_20.35.52.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-07-27_20.35.52.png" />
 
 **InGram框架包括基于图谱对实体的聚合，以及基于关系图对关系的聚合。**
 
