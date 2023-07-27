@@ -1,7 +1,7 @@
 ---
 title: "Recurrent Neural Networks"
 date: 2023-07-26T15:58:42+08:00
-draft: true
+draft: false
 mathjax: true
 bibFile: bib/bib.json
 ---
