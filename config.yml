@@ -126,7 +126,12 @@ params:
         Text: "Suggest Changes" # edit text
         appendFilePath: true # to append file path to Edit link
 
-
+    assets:
+        favicon: "https://raw.githubusercontent.com/yliuhz/blogs/master/static/favicon.ico"
+        favicon16x16:  "https://raw.githubusercontent.com/yliuhz/blogs/master/static/favicon.ico"
+        favicon32x32:  "https://raw.githubusercontent.com/yliuhz/blogs/master/static/favicon.ico"
+        apple_touch_icon:  "https://raw.githubusercontent.com/yliuhz/blogs/master/static/favicon.ico"
+        safari_pinned_tab:  "https://raw.githubusercontent.com/yliuhz/blogs/master/static/favicon.ico"
 
 # prefer feed.xml rather than index.xml
 outputFormats:
