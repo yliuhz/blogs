@@ -228,15 +228,15 @@ $$\Lambda_{rs}=
 \end{cases}
 $$
 
-其中$i\in r$表示$i\in g_i$。
+其中$i\in r$表示$g_i=r$。
 
 计算$w_{rs}$的极值，得到$\hat{w}\_{rs}=\frac{m_{rs}}{\Lambda_{rs}}$，代入对数似然，得到
 
-$$\mathcal{L}(G|g,I,O)=\sum_{rs}m_{rs}\log\frac{m_{rs}}{\lambda_{rs}}+2\sum_i(k_i^+\log I_i+k_i^-\log O_i)$$
+$$\mathcal{L}(G|g,I,O)=\sum_{rs}m_{rs}\log\frac{m_{rs}}{\Lambda_{rs}}+2\sum_i(k_i^+\log I_i+k_i^-\log O_i)$$
 
 定义一个先验参数$f_i=\frac{I_i}{I_i+O_i}$，$\theta_i=I_i+O_i$，那么上述对数似然可以重写为
 
-$$\mathcal{L}(G|g,I,O)=\sum_{rs}m_{rs}\log\frac{m_{rs}}{\lambda_{rs}}-2\sum_ik_iH(\frac{k_i^+}{k_i},f_i)+2\sum_ik_i\log\theta_i$$
+$$\mathcal{L}(G|g,I,O)=\sum_{rs}m_{rs}\log\frac{m_{rs}}{\Lambda_{rs}}-2\sum_ik_iH(\frac{k_i^+}{k_i},f_i)+2\sum_ik_i\log\theta_i$$
 
 其中$H(\frac{k_i^+}{k_i},f_i)=-\frac{k_i^+}{k_i}\log f_i-\frac{k_i^-}{k_i}\log(1-f_i)$表示观测到的$\frac{k_i^+}{k_i}$与先验$f_i$的交叉熵。因此，最大化该对数似然也是在最小化观测和先验的差距。$\frac{k_i^+}{k_i}$表示顶点$i$连接同社区邻居个数占其所有邻居个数的比例。
 
