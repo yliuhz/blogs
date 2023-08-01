@@ -1,5 +1,5 @@
 ---
-title: "GraphTransformer"
+title: "Beyond Message-Passing GNNs"
 date: 2023-07-18T20:07:55+08:00
 draft: true
 mathjax: true
@@ -46,3 +46,43 @@ GraphTrans包含两个子模块：GNN和Transformer。
 **`CLS`读出表征**：在NLP的文本分类任务中，一个通常的实践是在输入到神经网络之前，在文本的末尾添加特殊的`CLS`token，在训练时计算`CLS`和其他所有token的关系，并聚合表征到`CLS`上。在输出时，`CLS`的表征就作为整个文本的表征。
 
 GraphTrans采用类似的操作。在输入到Transformer之前，添加一个特殊的可学习的$\pmb{h}_{\<CLS\>}$。
+
+## Half-Hop: A graph upsampling approach for slowing down message passing
+
+本文发表于[ICML2023](https://openreview.net/forum?id=lXczFIwQkv)。
+
+### 研究动机
+
+由于图的结构是多样的，设计一种鲁棒的图学习范式应对不同的任务是具有挑战性的。大多数GNN遵循图结构上的信息传递（Message Passing，MP）机制。MP在（1）异配图{{< cite "BebO8uzL" >}}，即连边的两个顶点具有不同的类别；（2）顶点的度数和连通性不断变化的图上{{< cite "hl1cJIOU" >}}具有局限性。着眼于现有的广泛MP-GNN架构，我们需要的是能够即插即用的方法提升GNN的通用性。
+
+本文提出了一种新的数据增强方法，称为Half-Hop，直接修改输入图而非GNN的架构或者损失函数。Half-Hop是一种上采样方法，它引入边上的”慢节点“，用于减缓边上的信息传递。Half-Hop可同时应用于图学习中的半监督和自监督任务。
+
+### 解决方案
+
+对于一条有向边$(v_i,v_j)$，Half-Hop在中间添加一个顶点$v_k$，使得$v_i$到$v_k$是单向的，而$v_k$到$v_j$是双向的：
+
+$$
+\begin{align}
+V'&=V\cup \\{v_k\\} \\\
+E'&=(E\setminus \\{e_{ij}\\})\cup \\{e_{i\to k},e_{j\to k},e_{k\to j}\\} \\\
+\end{align}
+$$
+
+对于单双向边的选择，作者在附录展示了实验结果，发现当前的选择在异配图上的*顶点分类*效果最优。
+新添加的顶点$v_k$需要特征向量，Half-Hop采用差值法：
+
+$$x_k=(1-\alpha)x_j+\alpha x_i$$
+
+其中$\alpha$是超参数。
+
+对于整张图，需要决定选取多少条边做插入慢顶点的增强。作者使用一个概率$p$。对于每个顶点$v_i$，以$p$的概率增强所有指向它的连边。这样得到的新的图结构写为$(V',E')\sim hh_{\alpha}(G;p)$。
+
+对于自监督学习场景，Half-Hop可用来生成多视角学习的两个视角：
+
+$$G_1\sim hh_{\alpha}(G;p_1),G_2\sim hh_{\alpha}(G;p_2)$$
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-01_20.51.59.png" />
+
+### 理解Half-Hop
+
+Half-Hop本身特别简单，作者花费另一个章节描述如何理解它的作用。
