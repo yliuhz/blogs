@@ -217,7 +217,13 @@ $$
 
 回顾对数似然$\log(G|\\{\lambda_{ij}\\})=\frac{1}{2}\sum_{ij}(A_{ij}\log\lambda_{ij}-\lambda_{ij})$，代入新定义的$\lambda_{ij}$，得到
 
-$$\mathcal{L}(G|g,w,I,O)=2\sum_i(k_i^+\log I_i+k_i^-\log O_i)+\sum_{rs}m_{rs}\log w_{rs}-w_{rs}\Lambda_{rs}$$
+$$
+\begin{align}
+\mathcal{L}(G|g,w,I,O) &= \sum_{g_i=g_j}(A_{ij}\log(w_{g_ig_j}I_iI_j)-w_{g_ig_j}I_iI_j)+\sum_{g_i\neq g_j}(A_{ij}\log(w_{g_ig_j}O_iO_j)-w_{g_ig_j}O_iO_j)\\\
+&= \left[\sum_{g_i=g_j}A_{ij}(\log I_i+\log I_j)+\sum_{g_i\neq g_j}A_{ij}(\log O_i+\log O_j)\right]+\left[\sum_{g_i=g_j}A_{ij}w_{g_ig_j}+\sum_{g_i\neq g_j}A_{ij}w_{g_ig_j}\right]-\left[\sum_{g_i=g_j}w_{g_ig_j}I_iI_j+\sum_{g_i\neq g_j}w_{g_ig_j}O_iO_j\right]\\\
+&= 2\sum_i(k_i^+\log I_i+k_i^-\log O_i)+\sum_{rs}m_{rs}\log w_{rs}-w_{rs}\Lambda_{rs} \\\
+\end{align}
+$$
 
 其中$k_i^+$表示节点$i$在其社区内部的度，$k_i^-=k_i-k_i^+$，$\Lambda_{rs}$为
 
@@ -230,7 +236,7 @@ $$
 
 其中$i\in r$表示$g_i=r$。
 
-计算$w_{rs}$的极值，得到$\hat{w}\_{rs}=\frac{m_{rs}}{\Lambda_{rs}}$，代入对数似然，得到
+计算$w_{rs}$的极值，即$\frac{\partial \mathcal{L}}{\partial w_{rs}}=\frac{m_{rs}}{w_{rs}}-\Lambda_{rs}=0$，得到$\hat{w}\_{rs}=\frac{m_{rs}}{\Lambda_{rs}}$，代入对数似然，得到
 
 $$\mathcal{L}(G|g,I,O)=\sum_{rs}m_{rs}\log\frac{m_{rs}}{\Lambda_{rs}}+2\sum_i(k_i^+\log I_i+k_i^-\log O_i)$$
 
