@@ -49,7 +49,7 @@ $$\mathcal{L}(G|g)=\sum_{rs}m_{rs}\log\frac{m_{rs}}{n_rn_s}$$
 
 $$p(r\to s|t)=\frac{m_{ts}+\epsilon}{\sum_sm_{ts}+\epsilon K}$$
 
-其中$t$表示顶点的邻居的社区标签，$m_{ts}$表示社区$t$和$s$之间的合计边个数，或者在$t=s$时等于该数值的二倍。$\epsilon>0$通常被设置成较小的数值，在$\epsilon$趋于无穷时转化概率变为$1/K$成为完全随机地转移。对于每次尝试转移，接受该转移的概率$a$定义为：
+其中$t$表示随机采样的一个邻居的社区标签{{< cite "1P6Rfctx" >}}，$m_{ts}$表示社区$t$和$s$之间的合计边个数，或者在$t=s$时等于该数值的二倍。$\epsilon>0$通常被设置成较小的数值，在$\epsilon$趋于无穷时转化概率变为$1/K$成为完全随机地转移。对于每次尝试转移，接受该转移的概率$a$定义为：
 
 $$a=\min \left\\{\exp(\beta\Delta\mathcal{L})\frac{\sum_tn_tp(s\to r|t)}{\sum_tn_tp(r\to s|t)},1\right\\}$$
 

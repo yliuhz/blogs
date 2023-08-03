@@ -160,3 +160,53 @@ $$\text{Hit@}n=\frac{1}{T_{test}}\sum_{i=1}^{T_{test}}\mathbb{I}(\text{rank}_i\l
 
 (i)和(ii)验证不使用attention系数的影响；(iii)验证在($\ref{eq:7}$)式中替换固定的$z_i^{(L)}$为可学习的变量的影响；(iv)验证在每个epoch不重新mask的影响；(v)验证在每个epoch不重新初始化特征向量的影响；(vi)验证在($\ref{eq:4}$)式中“桶”的个数$B=1$的影响。
 
+## OTKGE: Multi-modal Knowledge Graph Embeddings via Optimal Transport
+
+{{< cite "4HJCEYmk" >}} 研究了知识图谱的多模态表征的对齐问题。
+
+### 研究动机
+
+大多数图谱表征（Knowledge Graph Embedding，KGE）方法是单模态方法。然而，现实中可以收集到多种来源的多模态数据，综合它们能够更全面地表达信息。因此近些年出现了多模态KGE方法的研究。现有方法在得到每个模态的表征后，简单地使用连接、平均等操作将它们聚合，作为最终的表征。然而，不同模态的表征分布呈现异构性，直接地融合可能导致破坏内在的分布，从而在聚合后导致不一致或不全面的表征。
+
+本文将提出OTKGE方法，将不同模态表征的对齐形式化为最优传输（Optimal Transport，OT）问题。OT可以通过制定一个最优的传输方案，将不同模态的表征映射到统一的空间，并通过最小化不同分布的Wasserstein距离解决分布的不一致问题。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-03_21.54.45.png" />
+
+### 问题设置
+
+给定一个图谱$G=(E,R,T)$，其中$E,R,T$分别表示实体、关系和三元组。通过表征模型得到每个实体$e$的结构表征$e_S$、语言表征$e_I$和视觉表征$e_V$。本文中，多模态的表征$e_I,e_V$用于对齐$e_I$，即将结构表征作为主信息，将其他模态的信息看作辅助信息。
+
+### 解决方案：OTKGE
+
+#### 最优传输问题
+
+给定两个数据集$X=(x^{(1)},\cdots,x^{(n)}),Y=(y^{(1)},\cdots,y^{(m)})$，和Dirac分布$\delta(\cdot)$。第一步我们想估计两个数据集的经验概率测度（empirical probability measures），分别表示为$\mu,\nu$：
+
+$$
+\begin{align}
+\mu &= \sum_{i=1}^n\alpha_i\delta(x^{(i)}) \\\
+\nu &= \sum_{i=1}^m\beta_i\delta(y^{(i)})
+\end{align}
+$$
+
+其中$\pmb{\alpha}=(\alpha_1,\cdots,\alpha_n),\pmb{\beta}=(\beta,\cdots,\beta_n)$可以看做概率单纯形（simplex）。接下来，我们需要一个代价函数评估两个数据集中的数据点$(x^{(i)},y^{(j)})$的距离，记作$C_{ij}$。接着，我们需要计算$\mu$和$\nu$之间的传输耦合（transport coupling），记作$T$。$T_{ij}$可以表示观测到$(x^{(i)},y^{(j)})$的联合概率。$T$可以通过如下方式得到：
+
+$$
+\begin{align}
+OT(\mu,\nu,C) &= \min_T<T,C> \\\
+\text{s.t. } &\\{T\in\mathbb{R}\_+^{n\times m}|T\pmb{1}_m=\alpha,T^T\pmb{1}_n=\beta\\} \\\
+<T,C> &= tr(T^TC)
+\end{align}
+$$
+
+#### Wasserstein距离
+
+如果定义代价函数$C_{ij}$为$C_{ij}=\parallel x^{(i)},y^{(j)} \parallel_p^p$，那么相应的$p$-阶Wasserstein距离定义为
+
+$$W_p(\mu,\nu)=OT(\mu,\nu;\parallel \cdot\parallel_p^p)^{1/p}$$
+
+本文中为方便设置$p=1,2$。
+
+#### 对齐多模态表征
+
+假设现在要对齐语言表征$e_I$到$e_S$。
