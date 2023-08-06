@@ -58,8 +58,8 @@ outputs:
 
 params:
     env: production # to enable google analytics, opengraph, twitter-cards and schema.
-    description: ""
-    author: Yue
+    description: "LIU Yue, Yue LIU, YUE LIU, ZJU, HKUST, yliuhz, liuyuehk, yliumh"
+    author: Yue LIU
     # author: ["Me", "You"] # multiple authors
 
     # defaultTheme: auto

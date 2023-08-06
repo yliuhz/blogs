@@ -166,11 +166,11 @@ $$\text{Hit@}n=\frac{1}{T_{test}}\sum_{i=1}^{T_{test}}\mathbb{I}(\text{rank}_i\l
 
 ### 研究动机
 
-大多数图谱表征（Knowledge Graph Embedding，KGE）方法是单模态方法。然而，现实中可以收集到多种来源的多模态数据，综合它们能够更全面地表达信息。因此近些年出现了多模态KGE方法的研究。现有方法在得到每个模态的表征后，简单地使用连接、平均等操作将它们聚合，作为最终的表征。然而，不同模态的表征分布呈现异构性，直接地融合可能导致破坏内在的分布，从而在聚合后导致不一致或不全面的表征。
+大多数图谱表征（Knowledge Graph Embedding，KGE）方法是单模态方法。现实中可以收集到多种来源的多模态数据，综合它们能够更全面地表达信息。因此近些年出现了多模态KGE方法的研究。现有方法在得到每个模态的表征后，简单地使用连接、平均等操作将它们聚合，作为最终的表征。然而，不同模态的表征分布呈现异构性，直接地融合可能导致破坏内在的分布，从而在聚合后导致不一致或不全面的表征。
 
 本文将提出OTKGE方法，将不同模态表征的对齐形式化为最优传输（Optimal Transport，OT）问题。OT可以通过制定一个最优的传输方案，将不同模态的表征映射到统一的空间，并通过最小化不同分布的Wasserstein距离解决分布的不一致问题。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-03_21.54.45.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-03_21.54.45.png" width=70%/>
 
 ### 问题设置
 
@@ -189,13 +189,13 @@ $$
 \end{align}
 $$
 
-其中$\pmb{\alpha}=(\alpha_1,\cdots,\alpha_n),\pmb{\beta}=(\beta,\cdots,\beta_n)$可以看做概率单纯形（simplex）。接下来，我们需要一个代价函数评估两个数据集中的数据点$(x^{(i)},y^{(j)})$的距离，记作$C_{ij}$。接着，我们需要计算$\mu$和$\nu$之间的传输耦合（transport coupling），记作$T$。$T_{ij}$可以表示观测到$(x^{(i)},y^{(j)})$的联合概率。$T$可以通过如下方式得到：
+其中$\pmb{\alpha}=(\alpha_1,\cdots,\alpha_n),\pmb{\beta}=(\beta_1,\cdots,\beta_m)$可以看做概率单纯形（simplex）。接下来，我们需要一个代价函数评估两个数据集中的数据点$(x^{(i)},y^{(j)})$的距离，记作$C_{ij}$。接着，我们需要计算$\mu$和$\nu$之间的传输耦合（transport coupling），记作$T$。$T_{ij}$可以表示观测到$(x^{(i)},y^{(j)})$的联合概率。$T$可以通过如下方式得到：
 
 $$
 \begin{align}
-OT(\mu,\nu,C) &= \min_T<T,C> \\\
+OT(\mu,\nu,C) &= \min_T \langle T,C\rangle \\\
 \text{s.t. } &\\{T\in\mathbb{R}\_+^{n\times m}|T\pmb{1}_m=\alpha,T^T\pmb{1}_n=\beta\\} \\\
-<T,C> &= tr(T^TC)
+\langle T,C\rangle &= tr(T^TC)
 \end{align}
 $$
 
