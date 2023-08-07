@@ -47,6 +47,61 @@ GraphTrans包含两个子模块：GNN和Transformer。
 
 GraphTrans采用类似的操作。在输入到Transformer之前，添加一个特殊的可学习的$\pmb{h}_{\<CLS\>}$。
 
+## Pure Transformers are Powerful Graph Learners
+
+{{< cite "N08DsO0I" >}} 提出了TokenGT，将图中的顶点和边都看成单词（token），使用原始transformer进行学习；并从理论上证明，在一定条件下TokenGT至少具有不变图网络（invariant graph network，2-IGN）的表达能力，这已经比所有的信息传递GNN有更强的表达能力。
+
+### 研究动机
+
+由于Transformer的巨大成功，许多工作尝试将self-attention机制加入图学习中。由于Transformer的全局注意力无法使用给定的图结构信息，现有工作对注意力的结构进行如下三种修改：
+
+- 使用局部注意力，即学习每条边上信息传递的权重，如GAT等；
+- 在信息传递GNN后连接Transformer；
+- 通过注意力偏置在全局注意力中加入图的连边信息，如Graphormer等。
+
+然而，这些修改会限制Transformer在多模态或多任务场景的通用性{{< cite "IHZXfRPy" >}}。而且可能额外引入GNN的局限性，如过平滑等。此外，针对Transformer的工程优化方法可能无法使用，如线性注意力{{< cite "18JvSI3xc" >}}等。
+
+因此，本文将标准Transformer直接应用于图数据。将顶点和边看作相互独立的单词，选用恰当的单词表征进行增强，同时在理论和实验上取得不错的结果。
+
+### 解决方案：TokenGT
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-07_19.56.43.png" />
+
+给定图$G=(V,E)$，其中$V=\\{v_1,\cdots,v_n\\}$和$E=\\{e_1,\cdots,e_m\\}$分别表示顶点集和边集。每个顶点和边分别带有顶点特征$X^V\in\mathbb{R}^C$和边特征$X^E\in\mathbb{R}^C$。因此，一共有$X=[X^V;X^E]\in\mathbb{R}^{(n+m)\times C}$的输入特征。一种naive的做法是直接将$X$输入Transformer中，但会忽视图结构以及对顶点和边的区分信息。因此，TokenGT对$X$进行两项增强：
+
+- **顶点标识符**，用于表示（顶点和边的）连通性；
+- （可训练的）**类型标识符**，用于区分顶点和边。
+
+#### 顶点标识符
+
+对于图$G=(V,E)$，构建正交向量集$P\in\mathbb{R}^{n\times d_p}$，称作顶点标识符。接着，对$X$进行增强：
+
+- 对每个顶点$v\in V$的特征，将$X_v$增强为$[X_v,P_v,P_v]$；
+- 对每条边$(u,v)\in E$的特征，将特征$X_{(u,v)}$增强为$[X_{(u,v)},P_u,P_v]$。
+
+由于$P$中的向量是正交的，通过一个简单的点积操作就可以判断顶点和边是否连通。例如，想要判断边$e=(u,v)$是否与顶点$k$连通，即是否有$k\in\\{u,v\\}$，只需要检查$[P_u,P_v][P_k,P_k]^T$，它的值为$1$当且仅当$k\in\\{u,v\\}$。
+
+由于$P$只要求正交性，有许多种生成正交向量集的方法可供选择。作者展示了两种方法：
+
+- ORFs：对随机高斯矩阵$\pmb{G}\in\mathbb{R}^{n\times n}$，计算它的QR分解，得到$Q\in\mathbb{R}^{n\times n}$，取$Q$的每一行即可；
+- 取图的Laplace矩阵的特征分解$\Delta=I-D^{-1/2}AD^{-1/2}=U^T\Lambda U$中的$U$矩阵。
+
+#### 类型标识符
+
+类型标识符是可训练的。对于图$G=(V,E)$，构建可训练的矩阵$E=[E^V,E^E]\in \mathbb{R}^{2\times d_e}$，接着，对$X$进一步增强：
+
+- 对每个顶点$v\in V$的特征，将$[X_v,P_v,P_v]$增强为$[X_v,P_v,P_v,E^V]$；
+- 对每条边$(u,v)\in E$的特征，将特征$[X_{(u,v)},P_u,P_v]$增强为$[X_{(u,v)},P_u,P_v,E^E]$。
+
+**注意到$E$只有两行，即所有顶点共用一个类型表示符，所有边共用另一个类型标识符**。
+
+#### 模型输入和结构
+
+给定增强后的特征$X^{in}\in\mathbb{R}^{(n+m)\times(C+2d_p+d_e)}$，首先使用一个可训练的矩阵$w^{in}\in\mathbb{R}^{(C+2d_p+d_e)\times d}$变换维度，作为Transformer的输入。对于图级别的预测任务，参照流行的实践，额外添加一个特殊的单词`[graph]`，带有可训练的表征$X_{graph}\in\mathbb{R}^d$。这样，Transformer的输入为$Z^{(0)}=[X_{graph}；X^{in}w^{in}]\in\mathbb{R}^{(1+n+m)\times d}$。
+模型采用标准的多头注意力和前馈网络交替堆叠的架构。
+
+本文在正文部分使用PCQM4Mv2数据集做图回归任务实验，在附录补充了顶点分类任务的实验。
+
 ## Half-Hop: A graph upsampling approach for slowing down message passing
 
 本文发表于[ICML2023](https://openreview.net/forum?id=lXczFIwQkv)。
