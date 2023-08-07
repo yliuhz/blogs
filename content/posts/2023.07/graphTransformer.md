@@ -98,9 +98,71 @@ GraphTrans采用类似的操作。在输入到Transformer之前，添加一个�
 #### 模型输入和结构
 
 给定增强后的特征$X^{in}\in\mathbb{R}^{(n+m)\times(C+2d_p+d_e)}$，首先使用一个可训练的矩阵$w^{in}\in\mathbb{R}^{(C+2d_p+d_e)\times d}$变换维度，作为Transformer的输入。对于图级别的预测任务，参照流行的实践，额外添加一个特殊的单词`[graph]`，带有可训练的表征$X_{graph}\in\mathbb{R}^d$。这样，Transformer的输入为$Z^{(0)}=[X_{graph}；X^{in}w^{in}]\in\mathbb{R}^{(1+n+m)\times d}$。
-模型采用标准的多头注意力和前馈网络交替堆叠的架构。
+模型采用标准的多头注意力和前馈网络交替堆叠的架构。*损失函数由下游任务决定*。
 
 本文在正文部分使用PCQM4Mv2数据集做图回归任务实验，在附录补充了顶点分类任务的实验。
+
+## Do Transformers Really Perform Bad for Graph Representation?
+
+{{< cite "EijShNli" >}} 提出了图表示学习模型Graphormer。
+
+回顾标准Transformer：
+
+$$
+\begin{align}
+Q=HW_Q,K=HW_K,V=HW_V \label{eq:1}\tag{1}\\\
+A=\frac{QK^T}{\sqrt{d_K}},\text{Attn}(H)=\text{softmax}(A)V \label{eq:2}\tag{2} \\\
+\end{align}
+$$
+
+为了应用于图数据，作者提出3项修改：中心编码、空间编码、边编码。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-07_21.30.06.png" />
+
+### 中心编码
+
+顶点中心性用来描述一个顶点的重要性。例如，在社交网络中，一个公众人物有许多关注者，那么他对预测社交网络的趋势比普通用户更加重要。标准Transformer无法表示顶点中心性信息。
+
+为此，作者定义了可训练的表征向量$z^-,z^+\in\mathbb{R}^d$，用它们增强初始顶点特征：
+
+$$h_i^{(0)}=x_i+z^-\_{\text{deg}^-(v_i)}+z^+_{\text{deg}^+(v_i)}$$
+
+其中$\text{deg}^-(v_i)$和$\text{deg}^+(v_i)$分别表示顶点$v_i$的入度和出度。
+
+### 空间编码
+
+为了编码图的空间结构信息，作者定义一个可训练的标量$b\in\mathbb{R}$，修改式$\ref{eq:2}$为
+
+$$A_{ij}=\frac{QK^T}{\sqrt{d_K}}+b_{\phi(v_i,v_j)}$$
+
+其中$\phi:V\times V\to\mathbb{Z}$将边映射到一个标量。本文定义$\phi(v_i,v_j)$为$v_i,v_j$的最短路径。不连通顶点的$\phi$值统一设置为$-1$。
+
+作者讨论了空间编码的好处。第一，与GNN不同，Transformer是全局注意力，能够看到所有其他的顶点，而像GNN局限于邻居顶点；第二，通过学习$b$，Transformer可以选择性地从其他顶点聚合信息。例如，如果$b$训练后为递减函数，那么模型会更多关注临近的顶点。
+
+### 边编码
+
+许多任务中，边同样具有初始特征向量。例如，在分子图中，原子之间的连边带有表示化学键的类型。合理地利用边的特征向量也是十分重要的。现有利用边特征的方法可分为两类：（1）将边特征加到两个端点的特征向量上；（2）在GNN信息传递的过程中使用边特征。这两种方法都只能将边特征传播到边的端点上。
+
+Graphormer提出一种新的利用边特征的方法。对于每对顶点$(v_i,v_j)$，找到一条它们之间的最短路径$\text{SP}_{ij}=\\{e_1,e_2,\cdots,e_N\\}$。接着，定义相同长度的可训练权重$\\{w_1^E,w_2^E,\cdots,w_N^E\\}$，将路径中每条边的特征向量与权重相乘做加权平均，将结果同样添加到顶点$v_i,v_j$的attention系数计算过程中：
+
+$$A_{ij}=\frac{QK^T}{\sqrt{d_K}}+b_{\phi(v_i,v_j)}+\frac{1}{N}\sum_{n=1}^Nx_{e_n}(w_n^E)^T$$
+
+其中$x_{e_n}$表示路径$\text{SP}_{ij}$中的第$i$条边，$w_n^E\in\mathbb{R}^{d_E}$表示第$i$个权重向量，$d_E$表示边特征的维度。
+
+### Graphormer的实现细节
+
+Graphormer基于标准Transformer进行修改。与原始论文的Transformer不同，采用广泛流行的修改 {{< cite "19GdVA8uU;mY7YPlVe" >}}：在Multi-head self-attention和FFN和之前先做Layernorm。具体来说，Graphormer的一层可表示为
+
+$$
+\begin{align}
+h'^{(l)} &=\text{MHA}(\text{LN}(h^{(l-1)}))+h^{(l-1)} \\\
+h^{(l)} &=\text{FFN}(\text{LN}(h'^{(l)}))+h'^{(l)}
+\end{align}
+$$
+
+对于图学习任务，同样添加一个特殊顶点`[VNode]`，与其他所有顶点通过虚拟边相连。`[VNode]`在最终层的表征向量就作为图的表征向量。虚拟边使得`[VNode]`与所有顶点的最短距离为$1$。为了区分虚拟边和真实边，作者对`[VNode]`单独定义了一个空间表征标量$b_{\phi(\text{[VNode]},v_j)}$和$b_{\phi(v_i,\text{[VNode]})}$。
+
+本文实验部分仅测试了图级别的预测任务。
 
 ## Half-Hop: A graph upsampling approach for slowing down message passing
 
