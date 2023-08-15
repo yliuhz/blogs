@@ -95,15 +95,15 @@ DoReMi在所有数据域上均获得性能提升，而不存在数据域之间�
 
 作者将参照模型、代理模型和最终的大模型的参数量统一，观察到在不同参数量规模时DoReMi均能获得性能提升。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-15_21.51.48.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-15_21.51.48.png" width=80%/>
 
 在参数量一致时，代理模型和最终的大模型哪个更好呢？作者发现，大模型的表现更好，尤其在参数量较大时。代理模型使用加权的损失函数训练，而大模型使用标准的损失函数在重新采样后的数据上训练。训练损失的不同导致了两个模型性能的差异。在参数量增大时差异扩大。*作者最后假设使用重采样的代理模型可能能提升代理模型的性能，进而优化DoReMi？*
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-15_21.57.01.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-15_21.57.01.png" width=75%/>
 
 作者验证了不同大小的代理模型对大模型性能的影响。结果显示当前采用的280M代理模型的提升最大，同时其他规格的代理模型相对基线方法也有一定提升。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-15_21.59.49.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-15_21.59.49.png" width=70%/>
 
 作者将代理模型的损失函数中的$l_{\theta}(x)-l_{\text{ref}}(x)$替换为$l_{\theta}(x)$，即"hardest"，或替换为$-l_{\text{ref}}(x)$，即"easiest"，发现均不如当前的设定。
 
