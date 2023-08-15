@@ -8,8 +8,8 @@ theme:
 # enableInlineShortcodes: true
 enableRobotsTXT: true
 buildDrafts: true
-buildFuture: true
-buildExpired: true
+buildFuture: false
+buildExpired: false
 enableEmoji: true
 pygmentsCodeFences: true
 pygmentsUseClasses: true

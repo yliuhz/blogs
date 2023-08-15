@@ -111,7 +111,7 @@ $$\hat{\theta}\_i=\frac{k_i}{\kappa_{g_i}}$$
 
 $$\hat{w}\_{rs}=m_{rs}$$
 
-将$\hat{\theta_i}$和$\hat{w}_{rs}$代入对数似然中，得到
+将$\hat{\theta}\_i$和$\hat{w}_{rs}$代入对数似然中，得到
 
 $$\log P(G|\theta,w,g)=2\sum_ik_i\log\frac{k_i}{\kappa_{g_i}}+\sum_{rs}m_{rs}\log m_{rs}-2m$$
 
