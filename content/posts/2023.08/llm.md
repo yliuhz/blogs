@@ -10,7 +10,7 @@ bibFile: bib/bib.json
 
 ### 研究动机 -- 数据混合比例
 
-大模型的训练数据是多种来源混合的。例如，著名的The-pile数据集，包含了24%的网页数据、9%的维基百科数据和4%的Github数据等。{{< cite "1EWVWsRQN" >}} 研究了多来源数据的混合比例问题。对于The-pile数据集，DoReMi首先训练一个280M参数量的与下游任务是无关的模型，用于生成每种数据的比例；接着，按这种比例重新采样数据，并训练一个目标大规模模型（8B）。结果表明大模型在每个数据源上都获得性能提升，即使在做了下采样的数据源上。
+大模型的训练数据是多种来源混合的。例如，著名的[The-pile数据集](https://pile.eleuther.ai/)，包含了24%的网页数据、9%的维基百科数据和4%的Github数据等。{{< cite "1EWVWsRQN" >}} 研究了多来源数据的混合比例问题。对于The-pile数据集，DoReMi首先训练一个280M参数量的与下游任务是无关的模型，用于生成每种数据的比例；接着，按这种比例重新采样数据，并训练一个目标大规模模型（8B）。结果表明大模型在每个数据源上都获得性能提升，即使在做了下采样的数据源上。
 
 现有得到数据比例的方法有启发式方法（The-pile）和基于下游任务的方法（PaLM、GLaM）。然而，启发式方法可能是次优的；基于下游任务的方法通常需要在多个任务和多种数据混合比例上训练上千个模型，并且在特定任务上有过拟合的风险。
 
@@ -49,7 +49,7 @@ $$
 
 其中$\eta=1,c=10^{-3}$为超参数。可以看到，差异$\lambda_t[i]$越大，域权重$\alpha_t[i]$的增幅越大。这表示在后续训练大模型时希望加入更多域$i$的数据。
 
-最后，利用上述$\min_\theta\max_{\alpha}L(\theta,\alpha)$更新代理模型的模型权重：
+最后，利用如下的$\min_\theta\max_{\alpha}L(\theta,\alpha)$更新代理模型的模型权重：
 
 $$\min_\theta\max_{\alpha}L(\theta,\alpha)=\min_\theta\max_{\alpha}\sum_{i=1}^k\alpha_i\cdot\left[\frac{1}{\sum_{x\in D_i}|x|}\sum_{x\in D_i}l_{\theta}(x)-l_{\text{ref}}(x)\right]$$
 
@@ -107,5 +107,66 @@ DoReMi在所有数据域上均获得性能提升，而不存在数据域之间�
 
 作者将代理模型的损失函数中的$l_{\theta}(x)-l_{\text{ref}}(x)$替换为$l_{\theta}(x)$，即"hardest"，或替换为$-l_{\text{ref}}(x)$，即"easiest"，发现均不如当前的设定。
 
+## CCNet: Extracting High Quality Monolingual Datasets from Web Crawl Data
 
+{{< cite "FvCnruSt" >}} 提出并[开源](https://github.com/facebookresearch/cc_net)了语料清洗框架CCNet，能够对语料进行去重、语言识别和质量筛选。
+
+### 相关工作 -- 数据预处理
+
+在词嵌入（word embedding）的背景下，已有针对数据预处理的研究，包括word2vec，GloVe，fastText等。CCNet采用与fastText相似的去重和语言识别步骤，并在后续添加了质量筛选步骤。
+CCNet可以应用于广泛的语言数据集预处理任务，适用于多语言。
+
+### CommonCrawl
+
+[Common Crawl](https://commoncrawl.org/)是一个网站，每个月都会发布随机爬取的网页快照，提供了大规模的语料数据。每个月之间的重复性很低。目前为止，完整的Common Crawl数据集已经包含8年的网页快照数据。爬取的网址没有限制，包括了多语言的网页，同时语料的质量也会参差不齐。因此，清洗Common Crawl的语料数据成为一大挑战。
+
+每个网页快照包含3种格式的数据：原始数据WARC、UTF-8文本WET、元数据WAT。CCNet专注于对WET格式数据的清洗。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-17_16.54.22.png" width=80%/>
+
+### 解决方案 -- CCNet
+
+每个月的数据在未压缩情况下有20~30TB的纯文本，对应于大约30亿个网页。例如，2019年2月有24TB的数据。CCNet采用分块的处理方法，将每个月的数据划分成1600块，每一块包含约5GB的WET数据。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-17_17.04.30.png" />
+
+#### 去重
+
+在去重前，CCNet对文本进行规范化，包括统一转换为小写，用占位符替换数字，删除所有Unicode标点符号和重音符号等。
+接着，在每个5GB块内，计算**每个段落**的SHA-1 HASH值，并且只取前64位作为该段落的标识符。利用标识符对段落进行去重。
+去重操作仅在一定数量的块进行，不同块之间相互独立，因此可以**并行**多个块的去重操作。
+除了删除相同的网页之外，去重还能够删除许多样板语料，如导航菜单、cookie警告和联系方式等。特别地，去重能够删除其他语言中大量重复的英文数据，这有利于提升后续预言识别的准确度。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-18_10.35.37.png" />
+
+如上图所示，CCNet包含如下参数影响去重的效率和效果：
+
+- `num_shards`：表示将一个月的数据分成多少个块，同时表示在磁盘上存储多少个hash文件；
+- `hash_in_mem`：去重时每个块独立进行；对于每个块，首先加载到磁盘上`hash_in_mem`个hash文件，然后删除该块的hash值出现在hash文件中出现$>1$次的段落；
+
+可以看到，每个hash文件的格式是`{截断的64位SHA1 Hash值：出现的次数-1}`的词典格式。去重时首先加载词典到内存，然后检查待去重块的hash值对应的value，只保留value值为$0$的段落，即*直接去除了所有重复的内容，没有保留一份*。
+
+#### 语言识别
+
+语言识别的目的是按语种将数据划分开。与前序工作类似，CCNet使用了fastText中的语言分类器。该语言分类器在Wikipedia、Tatoeba和SETimes数据上训练得到，使用n-gram作为输入特征，并使用层级Softmax输出。它支持176种语言，对输入的未知语种数据在每种语言上输出一个$[0,1]$之间的分数。在一个CPU核上每秒能处理1000段话。对于每个网页，CCNet*计算一个最有可能的语言，以及分类器输出的语言分数*。如果该分数超过$0.5$，就将网页划分到这个语言；在低于$0.5$时直接舍弃该网页。
+
+#### 质量筛选
+
+经过去重和语言识别后仍然存在较低质量的语料。一种筛选高质量语料的方法是计算每个网页与目标域数据（如Wikipedia）的相似度。本文中，CCNet使用了一个在目标域上训练的语言模型，将评测模型的ppl值作为该网页的质量分数。
+
+具体来说，首先在目标数据域上训练一个tokenizer和模型。本文使用了sentence-piece tokenizer和5-gram Kneser-Ney模型，主要看中该模型的高效性。接着，将待筛选的Common Crawl数据输入模型，计算每个段落的ppl值。ppl值越小，表示该段落与目标域越接近。执行完毕后，每种语言的数据被划分为高、中、低三种质量的数据。CCNet提供了他们在48种语言的Wikipedia上训练的5-gram模型、训练的代码以及划分质量等级的阈值。*模型未涉及的语言不做质量筛选步骤。*
+
+### 实验
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-18_10.19.54.png" />
+
+与前序工作不同，本文采用先去重（dedup）后语言识别（LID）的顺序，理由是去重可以去除一些网页中其他语言的噪声数据，如cookie等，这对数据量较少的语言尤其有效。上图中，横坐标表示去重+语言识别后段落的个数，纵坐标表示后去重和先去重两种方法分别剩余段落个数的比例，图中每个点对应一种语言。可以看到对于数据量较少（靠左）的语言，先去重能够去除更多的噪声段落。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-18_10.58.02.png" />
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-18_10.58.09.png" />
+
+作者验证了`hash_in_mem`对去重效果和内存占用的影响。显然，`hash_in_mem`越大，去重时比较的范围越大，去重率越高，但同时内存的占用也会变高。CCNet使用了一种[内存高效的词典](https://github.com/greg7mdp/parallel-hashmap)，能够使用40GB的内存加载磁盘上13.5GB的Hash文件。
+
+作者使用文字汇报了CCNet的时间效率。他们将一个月的数据划分成1600个块，对应于使用1600核的CPU，每块大约5GB。首先，CCNet边下载原数据边计算Hash值，在45min内完成。接着，去重花费40%的时间，语言识别划分12.5%的时间，tokenizer分词花费33%的时间，LM质量筛选花费13%的时间。最后，重新将剩余数据整理为每块5GB的大小。总的来说，CCNet花费9个小时清洗一个月的数据。
 
