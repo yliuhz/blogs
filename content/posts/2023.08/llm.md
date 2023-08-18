@@ -162,9 +162,9 @@ CCNet可以应用于广泛的语言数据集预处理任务，适用于多语言
 
 与前序工作不同，本文采用先去重（dedup）后语言识别（LID）的顺序，理由是去重可以去除一些网页中其他语言的噪声数据，如cookie等，这对数据量较少的语言尤其有效。上图中，横坐标表示去重+语言识别后段落的个数，纵坐标表示后去重和先去重两种方法分别剩余段落个数的比例，图中每个点对应一种语言。可以看到对于数据量较少（靠左）的语言，先去重能够去除更多的噪声段落。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-18_10.58.02.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-18_10.58.02.png" width=80%/>
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-18_10.58.09.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-18_10.58.09.png" width=80%/>
 
 作者验证了`hash_in_mem`对去重效果和内存占用的影响。显然，`hash_in_mem`越大，去重时比较的范围越大，去重率越高，但同时内存的占用也会变高。CCNet使用了一种[内存高效的词典](https://github.com/greg7mdp/parallel-hashmap)，能够使用40GB的内存加载磁盘上13.5GB的Hash文件。
 
