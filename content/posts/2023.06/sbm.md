@@ -270,6 +270,8 @@ $$\mathcal{L}(G|g,I,O)=\sum_{rs}m_{rs}\log\frac{m_{rs}}{\Lambda_{rs}}-2\sum_ik_i
 
 **定理1**：当对于任意顶点$i$，$f_i=1/2$时，RSBM的MLE与DCSBM的MLE相同。
 
+<!-- _证明_：当$f_i=1/2$时，$I_i\equiv O_i$，此时RSBM的定义与DCSBM完全相同，因此MLE也相同。 -->
+
 **定理2**：对于任意自定义的$\\{f_i\\}$和极大似然估计的结果$\hat{\theta}_i$，RSBM能够保护顶点的度，即
 
 $$\sum_j\lambda_{ij}=k_i$$
@@ -369,3 +371,16 @@ $$
 ### RSBM：一个重新定义的SBM
 
 RSBM使用最短消息长度（Minimum Message Length, MML）进行模型选择，通过EM算法进行参数估计。 -->
+
+## Core-periphery 随机块模型
+
+{{< cite "1Bp0NnCGs" >}} 梳理了针对当前core-periphery的两种定义，分别定义并[开源](https://github.com/ryanjgallagher/core_periphery_sbm)了探测两种core-periphery结构的随机块模型。本文引用了图数据集合：[The KONECT Project](http://konect.cc/)。
+
+Core-perphery是图上一类基础而重要的子结构，顾名思义由紧密相连的"core"核心节点和稀疏的"periphery"边缘节点构成。可用于建模在线放大、认知学习过程、技术基础设施组织和重要疾病传播通道。检测core-periphery结构的方法包括统计推断、谱分解、扩散映射、图形模式计数、测地线追踪和模型平均。尽管方法多样，现有方法未形成对core-periphery的统一定义。主要分为两类：
+
+- 中心辐射型（hub-and-spoke）结构，即将图分成两个块，分别为核心块和边缘块。核心块中的顶点相互连接，核心节点与一些边缘节点相连，而边缘节点之间没有连边；
+- $k$-核分解（layered）结构，即将图层级划分为多个$k$-核。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-24_21.36.43.png" />
+
+本文首先分别利用流行的中心辐射结构和层级核结构的挖掘算法，在多个真实图数据集上运行，并定量衡量两种结果的差异。接着，将两种结构都建模成随机块模型，定义模型选择方法。最后以一个案例分析结束本文。
