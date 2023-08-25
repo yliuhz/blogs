@@ -389,7 +389,7 @@ Core-perphery是图上一类基础而重要的子结构，顾名思义由紧密�
 
 KONECT（Kolbenz Network Collection）是一个图数据集的仓库，涵盖了社交、生物、技术等多领域的图数据。对每张图，使用两种算法{{< cite "vbsKfS8;hf3NPvqm" >}}分别挖掘出中心辐射结构和层级结构。接着，利用VI（varaition of information）评估两种结构的距离。VI越大差异越大。结果如下图所示。
 
-<img src="iShot_2023-08-25_11.50.44.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-25_11.50.44.png" />
 
 为了研究哪种结构对特定的图有更好的统计描述，作者使用贝叶斯随机块模型将它们联系起来。**随机块模型的观点是，两点之间的连边完全由它们所属的块之间连边的概率决定。**
 由贝叶斯定理，块划分$g$和块之间的连边概率$w$的后验概率与它们的先验与似然的乘积正相关（proportional），$A$表示邻接矩阵。
