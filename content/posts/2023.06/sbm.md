@@ -381,6 +381,44 @@ Core-perphery是图上一类基础而重要的子结构，顾名思义由紧密�
 - 中心辐射型（hub-and-spoke）结构，即将图分成两个块，分别为核心块和边缘块。核心块中的顶点相互连接，核心节点与一些边缘节点相连，而边缘节点之间没有连边；
 - $k$-核分解（layered）结构，即将图层级划分为多个$k$-核。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-24_21.36.43.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-08-24_21.36.43.png"/>
 
-本文首先分别利用流行的中心辐射结构和层级核结构的挖掘算法，在多个真实图数据集上运行，并定量衡量两种结果的差异。接着，将两种结构都建模成随机块模型，定义模型选择方法。最后以一个案例分析结束本文。
+实际应用时可能难以获知算法到底返回的是那种core-periphery结构。本文首先分别利用流行的中心辐射结构和层级核结构的挖掘算法，在多个真实图数据集上运行，并定量衡量两种结果的差异。接着，将两种结构都建模成随机块模型，定义模型选择方法。最后以一个案例分析结束本文。
+
+### 两种结构的差异
+
+KONECT（Kolbenz Network Collection）是一个图数据集的仓库，涵盖了社交、生物、技术等多领域的图数据。对每张图，使用两种算法{{< cite "vbsKfS8;hf3NPvqm" >}}分别挖掘出中心辐射结构和层级结构。接着，利用VI（varaition of information）评估两种结构的距离。VI越大差异越大。结果如下图所示。
+
+<img src="iShot_2023-08-25_11.50.44.png" />
+
+为了研究哪种结构对特定的图有更好的统计描述，作者使用贝叶斯随机块模型将它们联系起来。**随机块模型的观点是，两点之间的连边完全由它们所属的块之间连边的概率决定。**
+由贝叶斯定理，块划分$g$和块之间的连边概率$w$的后验概率与它们的先验与似然的乘积正相关（proportional），$A$表示邻接矩阵。
+
+$$
+P(g,w|A) \propto P(A|g,w)P(g)P(w)
+$$
+
+欲构建core-periphery随机块模型，需要形式化先验$P(w)$，使其符合core-periphery结构的定义。如上面的Figure 2所示，两种结构分别对应不同的$P(w)$：
+
+- 中心辐射型：原始定义$p_{11}=p_{12}=1,p_{22}=0$，本文考虑宽泛的情形：$p_{11}>p_{12}>p_{22}$；
+- $k$-核分解：$p_{11}>p_{12}=p_{22}>p_{13}=p_{23}=p_{33}>\cdots$
+
+接着，使用Gibbs采样拟合随机块模型，得到两种结构的块：$g_H，g_L$，分别表示中心辐射（hub-and-spoke）结构和层级核分解（layered）结构。
+需要评估哪一个对于图$A$是更好的拟合，通过后验概率的比值：
+
+$$
+\Lambda=\frac{P(g_H,H|A)}{P(g_L,L|A)}
+$$
+
+其中$H,L$分别表示两种结构对应的随机块模型。$\Lambda>1$表示中心辐射型的结构更好。
+现在假设对于两种模型没有偏好，即先验$P(H)=P(L)=1/2$，由$P(g_H,H|A)=P(g_H,A|H)P(H)/P(A)\propto P(g_H,A|H)$，可以等价计算
+
+$$
+\begin{align}
+-\log\Lambda &= \Sigma_H-\Sigma_L \\\
+&= -\log P(A,g_H|H)+\log P(A,g_L|L)
+\end{align}
+$$
+
+其中$\Sigma_M=-\log P(A,g_M|M)$称作模型M的描述长度（description length），表示模型模型压缩信息的能力。能够使用更少的描述长度描述一个图网络的模型是更好的模型。因此，$\Sigma_M$越小表示模型越好。
+
