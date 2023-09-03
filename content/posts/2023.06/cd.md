@@ -73,9 +73,9 @@ $$L(M)=q_{\curvearrowright}H(Q)+\sum_{i=1}^mp_{\circlearrowright}^iH(P^i)$$
 
 如下图所示。作者通过描述火星上的一种地貌进行类比。描述型方法会讲图中有一张脸，有眼睛、鼻子和嘴巴等；而推断型方法只会讲图中是一座山。看成是人脸的解释结合了一些无关紧要的特征，实际上图中只是一座山。用人脸解释山并不能对理解该结构的生成过程有什么帮助。另一个例子是下面的图(c)和图(d)。作者随机地生成一张图，其中保证13个顶点有20的顶点度，其他230个顶点有1的顶点度。每个顶点伸出“半边”（stub），随机地与其他顶点的半边相连。使用描述型方法会得到一个看起来有道理的社区划分，也符合我们的直觉。然而，作者使用同一个随机生成模型又生成另一张图，再把描述型方法得到的社区划分代入，发现的可视化结果不再有道理。推断型方法则认为该图中没有社区结构，因为观测到的图结构无法给出充足的统计证据表明有社区。实际的图生成过程也确实如此。
 
-<img src="iShot_2023-09-03_10.48.36.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-09-03_10.48.36.png" />
 
-<img src="iShot_2023-09-03_11.00.12.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-09-03_11.00.12.png" />
 
 ### 描述还是推断？
 
@@ -87,7 +87,7 @@ $$L(M)=q_{\curvearrowright}H(Q)+\sum_{i=1}^mp_{\circlearrowright}^iH(P^i)$$
 描述型方法往往是一个单一目标的优化问题，与图生成无关。
 推断型方法基于图的生成模型，将它返回的社区代入生成模型，再次生成一张图，会发现原来的社区划分仍然是有意义的。如下图所示。
 
-<img src="iShot_2023-09-03_11.09.29.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-09-03_11.09.29.png" />
 
 ### 理解推断型方法
 
@@ -120,7 +120,7 @@ $$
 
 除了减少过拟合，描述长度还可以作为一种评估不同模型好坏的无监督参量。如下图所示。
 
-<img src="iShot_2023-09-03_11.45.30.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-09-03_11.45.30.png" />
 
 ### 推断型方法面临的挑战
 
@@ -131,4 +131,4 @@ $$
 
 作者整理了优化模块度的方法面临的局限性，以及相对应的，推断型方法如何解决了这些问题：
 
-<img src="iShot_2023-09-03_11.54.10.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-09-03_11.54.10.png" />
