@@ -70,6 +70,7 @@ $$A_S=A_{tl}\tilde{A}_{ll}A\_{tl}^T\in\mathbb{R}^{N_t\times N_t}$$
 
 #### LSTM模块
 
+轨迹是一种单向的线图，可以视作语言数据中的句子，轨迹中的每个顶点视作一个单词。
 构造的图中的顶点都没有初始表征，因此作者考虑用LSTM得到每条轨迹的初始表征。
 
 #### 分类器
@@ -96,3 +97,50 @@ $$\mathcal{L}=-\sum_{i=1}^{N_t}\sum_{k=1}^{N_u}y_i^t[k]\log y_i[k]$$
 $$\text{Macro-F1}=\frac{\sum_{i=0}^{N_u}F1_i}{N_u}$$
 
 实验结果显示使用LSTM并不会一直得到最优的预测准确度。
+
+## Contrastive Pre-training with Adversarial Perturbations for Check-in Sequence Representation Learning
+
+{{< cite "1HHILcPS3" >}} 提出了使用对比学习预训练的方法。作者认为现有对比学习方法的数据增强方法不适用于轨迹数据，因为他们做的数据扰动在具有地理和时间信息的数据中是无意义的，无法给模型提供真正需要学习的困难样本。因此，本文提出利用对抗方法提供时间-地理数据的数据增强和难样本。
+
+### 数据定义
+
+一个“签到”序列被定义为$T=(r_1,r_2,\cdots,r_n)$，其中$r=(t,p)$在时间戳$t$时出现在位置$p\in P$。POI点集$P$中的每个点$p$都有唯一的经纬度和语义信息。
+
+本文首先设计预训练模型$G$学习序列中每个位置的表征：$G(T)$。接着，将表征用于下游分类预测任务，如位置预测（Location Prediction, LP）和轨迹用户匹配（Trajectory User Link, TUL）。
+
+### 轨迹数据的表征学习
+
+在进入模型前，作者首先将每个POI位置表示为$|P|$维的独热编码。将时间戳划分到24小时中的某一小时，接着使用24维的独热编码作为时间戳的初始表征。表征模型将POI映射到向量$E_p\in \mathbb{R}^{|P|\times d_p}$，将时间戳映射到向量$E_t\in \mathbb{R}^{24\times d_t}$。
+上述表征学习记为$X=(x_1,\cdots,x_n)=f(T;\theta_{st})$。*作者未说明$E_p,E_t$和$X$的关系。*
+接着，将表征$X$输入双向LSTM，即BiLSTM，用于建模签到序列中的语义信息。将最后的隐藏态$h_n\in\mathbb{R}^{2d}$作为序列的最终表征$z$。其中，$h_n$由两个方向的最终态$\overleftarrow{h_n},\overrightarrow{h_n}\in\mathbb{R}^{d}$拼接而来。
+
+### 轨迹数据的增强和难样本生成
+
+将上述表征记作锚点表征$X_{an}=f(T;\theta_{st})$。为了得到正样本，作者使用高斯噪声对表征模型的权重参数进行扰动，得到正样本$X_{st}$：
+
+$$
+\begin{align}
+X_{st}&=f(T;\theta_{st}') \\\
+\theta_{st}'&=\theta_{st}+\eta\Delta\theta_{st} \\\
+\Delta\theta_{st}&\sim \mathcal{N}(0,\sigma^2)
+\end{align}
+$$
+
+作者将正样本称为时空噪声正样本（spatial temporal noise positive, STNPos）。经过相同的LSTM得到的序列的表征相对应的锚点和正样本分别记作$z_{an},z_{st}$。
+
+#### 难样本生成
+
+对于序列中的任意一个点$z_{an}$，将它在序列中的下一个点当作标签，那么负样本$z_{im}$首先考察距离$z_{an}$较近，但最不可能的下一个点，即
+
+$$
+\begin{align}
+z_{im} &= z_{an}-\epsilon\frac{g}{\parallel g\parallel_2} \\\
+g &= \nabla_{z_{an}}\log p_{\theta}(y|X_{an})
+\end{align}
+$$
+
+同理，考察距离$z_{an}$较远，但确实属于序列数据的“语义”的正样本。
+
+最终，正负样本各包含难易两类，如下图所示。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-09-20_20.32.08.png" />
