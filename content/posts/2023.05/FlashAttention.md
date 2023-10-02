@@ -76,8 +76,7 @@ $\mathbf{O}_i=\mathbf{O}\_i*l_i/l_i^{new} + \mathbf{O}\_{ij}$
 
 论文中的Algorithm1由于考虑了算术稳定性防止\exp得到过大的值，在softmax前减去了最大值m，因此看起来更复杂。
 
-![Algorithm 1](https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/iShot_2023-05-19_09.53.57.png)
-
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-05-19_09.53.57.png" />
 
 
 ### 发散QA
