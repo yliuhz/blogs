@@ -149,6 +149,8 @@ $$
 
 {{< cite "1CM9SFHvL" >}} 中设计了新的建图方法，并将轨迹表征器由LSTM替换为注意力模型。
 
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-06_15.16.22" />
+
 ### 建图方法
 
 作者首先将空间划分为更粗糙的网格区域，将轨迹中每个位置映射到相应的网格：$f_g:l_i\to g_i$。这样，原始轨迹中的每个点$(t_i,l_i)$变为$(t_i,g_i)$。
