@@ -149,7 +149,7 @@ $$
 
 {{< cite "1CM9SFHvL" >}} 中设计了新的建图方法，并将轨迹表征器由LSTM替换为注意力模型。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-06_15.16.22" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-06_15.16.22.png" />
 
 ### 建图方法
 
