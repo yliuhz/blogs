@@ -51,3 +51,44 @@ Ellipic是一家保护加密货币免受犯罪侵害的公司。Ellipic图数据
 
 <img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-07-26_20.57.07.png" />
 
+## Diga: Guided Diffusion Model for Graph Recovery in Anti-Money Laundering
+
+{{< cite "5aIS0RLz" >}} 研究了半监督洗钱检测的方法。首先使用PageRank采样子图，接着利用CV领域的扩散（diffusion）过程，将子图加噪声后重建的图与原图进行比较，从而得到该子图中心节点是否异常的分数。
+
+### Diga -- 解决方案
+
+#### Personalized PageRank (PPR) -- 采样中心节点的子图
+
+PageRank用于评估每个节点对于中心节点的重要性。计算好重要性分数后，取前$M$个最重要的节点构成中心节点的子图。
+
+作者将{{< cite "1NwIeJDz" >}}的1-跳PPR扩展为$K$-跳PPR。另外，作者发现一些特殊人群，如商人、零售业老板、优步司机等，有很大的顶点度数（即很多金钱交易），但其实与洗钱行为无关，属于正常的金钱交易。因此，在PPR中使用带参数的参数$\rho(u_i)$，从而对一些特殊人群$u_i$使用专家信息作为先验，指导PPR的计算过程。
+
+#### 扩散过程 -- 计算异常指数
+
+在得到中心节点的子图后，作者希望使正常节点的子图重建容易，而异常节点的子图重建困难，从而达到分类的目的。
+作者训练两个模型：
+
+- 去躁网络：用于重建加了高斯噪声的子图**属性矩阵**
+- 分类器：使用给定标签训练，用于指导去躁网络
+
+去躁网络与一般的扩散模型相似，由正向的加噪声过程和反向的去躁过程构成。其中，加噪声过程为
+
+$$q(Z_c^t|Z_c^{t-1})=\mathcal{N}(Z_c^t;\sqrt{1-\beta^t}Z_c^{t-1},\beta^tI)$$
+其中$Z_c^0=X_c$为初始属性矩阵。
+
+反过来，去躁过程中，作者使用一个GNN网络$\epsilon_{\theta}(G,Z^t,t)$估计正态分布的均值，具体如下：
+
+$$
+\begin{align}
+p_{\theta}(Z_c^{t-1}|Z_c^t) &=\mathcal{N}(Z_c^{t-1};\mu_{\theta}(G_c,Z_c^t,t),\sigma_t^2I) \\\
+\mu_{\theta}(G_c,Z_c,t) &=\frac{1}{\sqrt{\alpha_t}}(Z_c^t-\frac{\beta^t}{\sqrt{1-\overline{\alpha}^t}}\epsilon_{\theta}(G_c^t,Z_c^t,t)) \\\
+\end{align}
+$$
+
+接着，作者训练额外的分类器，用于指导上述去躁过程。类比于图像生成中，使用不同的条件指导生成图片的风格（如卡通等）。具体来说，分类器$p(y|G_c,Z_c,t)$使用子图结构、加噪声的属性矩阵作为输入，输出子图的中心节点是否异常的分类标签。该分类器使用训练集的标签进行训练。训练完成后，指导GNN反向去躁过程生成正常的子图属性矩阵。这样，**可以通过比较生成的正常属性和原属性的差别（如L2距离）来得到原来是否异常。**
+
+### 带有变差结果的消融实验？
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-10_22.04.46.png" />
+
+本文实际上写了3个技术贡献点，分别为PPR采样、分类器指导扩散过程，以及GNN权重共享。但消融实验显示第三个贡献点会导致准确率变差？
