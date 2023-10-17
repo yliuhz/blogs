@@ -100,7 +100,7 @@ Expert: (n.5) + (e.5)，该方法开头先说”你是个图分析师“（You a
 
 如下图所示。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-17_20.04.14.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-17_20.04.14.png" width=50%/>
 
 ### 标定节点选择
 
@@ -211,7 +211,7 @@ LLM使用[GPT-3.5-turbo-0613](https://platform.openai.com/docs/models/gpt-3-5)�
 
 作者考察每个类标定节点的数量$B$对节点分类准确率的影响，考察$B=\\{70,140,280,560,1120,2240\\}$。结果如下图所示。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-17_21.26.04.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-17_21.26.04.png" width=60%/>
 
 根据结果作者给出两点发现：（1）随着标定数量的提升，节点分类准确率逐渐上升；（2）由于LLM的标定有误差，节点分类准确率上升的速度受到限制，不如增加真实标签数量的上升速度。
 
@@ -219,7 +219,7 @@ LLM使用[GPT-3.5-turbo-0613](https://platform.openai.com/docs/models/gpt-3-5)�
 
 作者进一步研究LLM标定带来的噪声和人工加噪声的区别。假设LLM标定结果的准确率是$q\\%$，作者构建另一组人工加噪声的标签，即随机选择$1-q\\%$的标签进行扰动。观察训练节点分类器的结果。同时还考察一种对人工加噪声标签场景进行优化的训练策略RIM，观察其对LLM生成的标签是否有效。结果如下图所示。
 
-<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-17_21.34.18.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-17_21.34.18.png" width=60%/>
 
 根据结果作者给出两点发现：（1）LLM的标签噪声和人工加噪声是完全不同的。LLM标签不会像人工加噪声导致过拟合；（2）RIM对LLM标签几乎无效。
 
