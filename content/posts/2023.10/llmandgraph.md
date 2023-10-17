@@ -207,6 +207,8 @@ LLM使用[GPT-3.5-turbo-0613](https://platform.openai.com/docs/models/gpt-3-5)�
 
 结果如下图所示。可以看到本文的LLM-GNN的准确率显著由于零样本方法。LLMs-as-Predictors虽然准确率更高，但花费远超过使用LLM打标签的方法。
 
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-17_21.22.19.png" width=60%/>
+
 #### 标定节点数量的影响
 
 作者考察每个类标定节点的数量$B$对节点分类准确率的影响，考察$B=\\{70,140,280,560,1120,2240\\}$。结果如下图所示。
