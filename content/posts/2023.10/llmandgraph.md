@@ -84,3 +84,148 @@ Expert: (n.5) + (e.5)，该方法开头先说”你是个图分析师“（You a
 - **大语言模型在这些简单图论问题上的表现仍然较差**；
 - 描述图结构的方法对效果影响很大；
 - 模型的参数量对效果影响很大。
+
+## Label-free Node Classification on Graphs with Large Language Models (LLMs)
+
+{{< cite "MHZjeftY" >}} 研究了使用大语言模型为图节点打标签的可能性。GNN图节点分类通常需要高质量的标签，人工取得标签是昂贵的，而大模型在零样本和少样本学习任务上取得不错的效果。因此，作者考虑两个问题：（1）设计合适的prompt提示，使大模型输出准确的标签；（2）使用GNN训练时，选取同时具有高质量标签和代表性的节点作为训练集。
+
+本文的只考虑具有文本节点属性的图数据，即Cora, Citeseer, PubMed, OGBN-Arxiv, OGBN-Products, WikiCS。具体来说，图$G_T=(V,A,T,X)$，其中$n$个节点$V=\\{v_1,\cdots,v_n\\}$关联着原始属性$T=\\{\pmb{t}_1,\cdots,\pmb{t}_n\\}$，原始文本属性可以编码为句子表征$X=\\{\pmb{x}_1,\cdots,\pmb{x}_n\\}$。$A$表示邻接矩阵。
+
+鉴于标注工作的昂贵，本文提出LLM-GNN，即使用LLM进行标定，包括如下4步：
+
+- 标注节点选择
+- LLM标定
+- 后处理
+- GNN训练和预测
+
+如下图所示。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-17_20.04.14.png" />
+
+### 标定节点选择
+
+作者发现，在多个图数据集上，距离KMeans聚类中心越近的顶点，使用LLM标定的准确率越高。如下图所示。作者随机采样1000个顶点，按它们距离KMeans聚类中心的距离划分为10组，分别计算标定准确率。图中蓝线表示前$i$组的平均准确率。可以看到随着组号增大（即距离增大）准确率呈下降趋势。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-17_20.14.16.png" />
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-17_20.14.24.png" />
+
+作者定义了一个参量衡量到聚类中心的距离：
+
+$$\text{C-Density}(v_i)=\frac{1}{1+\parallel x_{v_i}-x_{\text{CC}_{v_i}}\parallel}$$
+
+其中$\text{CC}_{v_i}$表示$v_i$所在的聚类的中心。
+
+传统的”主动“（active）标定节点选择方法主要考虑节点的多样性和代表性，一般可选用PageRank分数衡量结构多样性。这里为了结合C-Density，考虑两种分数对应排名的加权和：
+
+$$f(v_i)=\alpha_0\times r_{act}(v_i)+\alpha_1\times r_{\text{C-Density}}(v_i)$$
+
+其中$r_{\star}$表示排名。选取$f_{v_i}$较高的顶点作为待标定节点集。
+
+### 带有置信度的标定
+
+使用LLM标定时，作者希望同时得到一个置信度分数，来更好地衡量标注的可靠性。作者列举了5种从LLM得到置信度的方法：
+
+- 直接询问置信度
+- 带有推理方法的prompt指示，如chain-of-thought和multi-step reasoning
+- TopK prompt，即命令LLM生成K个最可能的答案，选择可能性最高的作为结果
+- 多次询问LLM同一个问题，选择重复次数最多的答案
+- 混合方法，即(3)和(4)
+
+作者在上述prompt问题前添加了供LLM in-context learning的例子，为了效率本文每次只使用一个例子。如下图所示。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-17_20.34.41.png" />
+
+接着，作者通过实验验证标定的准确性和可靠性，即（1）采样100个标定的顶点，直接比较标定结果和真实标签，计算准确率；（2）考察LLM输出置信度和准确率的关系。随机采样300个顶点，将它们按置信度从大到小排序，计算前$k$个顶点的平均标定准确率，其中$k=\\{50,100,150,200,250,300\\}$。结果如下图所示。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-17_20.40.34.png" />
+
+作者根据结果给出3个发现：
+
+- LLM在zero-shot（不提供例子的prompt）的条件下效果良好，表明LLM是好用的标定工具
+- LLM在few-shot的条件下标定准确率有轻微的提升
+- zero-shot的混合prompt提示方法是最高效的方法，因为LLM输出的置信度可以较准确得表明标定的质量
+
+作者在后续实验中均使用zero-shot的混合prompt提示方法。
+
+### 标定后处理
+
+在后处理步骤，我们已经得到LLM的标定结果，因此可以用标定结果直接计算标签的多样性。后处理的目的是删除低质量的标定节点，缩小标定集，保证标签的多样性。作者通过熵定义了一个参量：
+
+$$\text{COE}(v_i)=H(y_{V-\\{v_i\\}})-H(y_{V})$$
+
+即考察删除节点$v_i$后熵的变化。作者认为应该删除COE值较大的顶点。作者同时结合了LLM输出的置信度共同评估标签的质量，即计算加权和：
+
+$$f(v_i)=\beta_0\times r_{\text{conf}}(v_i)+\beta_1\times r_{\text{COE}}(v_i)$$
+
+其中$r_{\star}$表示排名。
+不断删除顶点直到达到预设的标定集规模。
+
+### 作者的说明
+
+作者发现同时使用本文提出的标定节点选择方法和后处理方法并不能取得最优的结果，因此可以将传统的节点选择方法与本文提出的后处理方法结合。作者强调他们提出的是一个管线，管线内部可以灵活替换。
+
+### 数据集和实验设置
+
+本文使用4个引文数据集，1个网页数据集，1个产品关联性数据集（产品同时购买关系）。数据集信息如下所示。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-17_20.58.32.png" />
+
+本文采用节点分类任务。作者为每个节点类选取20个顶点进行标定。模型使用GCN和GraphSAGE。作者强调没有对$\alpha_0,\alpha_1,\beta_0,\beta_1$进行调参。
+训练GNN时，没有划分验证集，每组实验重复3次。中小数据集训练30 epochs，大数据集训练50 epochs。作者认为本文中的训练标签是带有噪声的，训练小代数是防止GNN对噪声过拟合，可以视作一种early stopping策略。
+
+LLM使用[GPT-3.5-turbo-0613](https://platform.openai.com/docs/models/gpt-3-5)。
+
+### 实验结果
+
+#### 标定节点选择方法对比
+
+本文中的标定节点选择方法涉及到主动学习方法，对比时也考虑了主动学习的已有方法。对比方法包括4类：
+
+- 传统方法，包括Random, Density-based, GraphPart, FeatProp, Degree-based, Pagerankcentrality-based, AGE, RIM
+- C-Density方法及其与传统方法的结合，记为DA-
+- 后处理方法，记为PS-
+- C-Density与后处理的结合，记为PS-DA
+
+实验结果如下图所示。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-17_21.15.32.png" />
+
+根据结果作者给出3点发现：
+
+- 后处理方法是很有效的
+- C-Density方法虽然得到的标定准确率高，但会导致标签不平衡问题。例如，作者发现在PubMed数据集上它选择的所有标定节点有相同的标签
+- 本文没有调参，展示的结果有上升空间
+
+#### 与无标签节点分类方法对比
+
+作者展示了在两个OGBN大数据集上的节点分类准确率和花费，花费用美元dollar衡量。对比方法有3类：
+
+- 零样本节点分类方法：SES, TAG-Z
+- 零样本文本分类方法：BART-Large-MNLI
+- 作者先前提出的使用LLM进行分类：LLMs-as-Predictors
+
+结果如下图所示。可以看到本文的LLM-GNN的准确率显著由于零样本方法。LLMs-as-Predictors虽然准确率更高，但花费远超过使用LLM打标签的方法。
+
+#### 标定节点数量的影响
+
+作者考察每个类标定节点的数量$B$对节点分类准确率的影响，考察$B=\\{70,140,280,560,1120,2240\\}$。结果如下图所示。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-17_21.26.04.png" />
+
+根据结果作者给出两点发现：（1）随着标定数量的提升，节点分类准确率逐渐上升；（2）由于LLM的标定有误差，节点分类准确率上升的速度受到限制，不如增加真实标签数量的上升速度。
+
+#### LLM标定结果的性质
+
+作者进一步研究LLM标定带来的噪声和人工加噪声的区别。假设LLM标定结果的准确率是$q\\%$，作者构建另一组人工加噪声的标签，即随机选择$1-q\\%$的标签进行扰动。观察训练节点分类器的结果。同时还考察一种对人工加噪声标签场景进行优化的训练策略RIM，观察其对LLM生成的标签是否有效。结果如下图所示。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-17_21.34.18.png" />
+
+根据结果作者给出两点发现：（1）LLM的标签噪声和人工加噪声是完全不同的。LLM标签不会像人工加噪声导致过拟合；（2）RIM对LLM标签几乎无效。
+
+### 相关工作
+
+#### 图上的主动学习
+
+图主动学习的目的是在给定每个类的标定数量的条件下，选取真正的标定节点，以最大化测试集上的准确率。有两类现有工作。第一类基于一些对标签代表性和多样性的假设，如{{< cite "10BVsN5CV" >}}假设多样性和节点的划分（聚类）有关，因此标定节点从不同的聚类选择；{{< cite "1GjbjpB2d" >}}假设代表性和节点的影响力有关，因此选择影响力分数高的节点作为标定节点。另一类方法直接使用训练模型的准确率作为目标，使用强化学习方法选择标定节点。
+
