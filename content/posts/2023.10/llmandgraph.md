@@ -280,14 +280,14 @@ LLM使用[GPT-3.5-turbo-0613](https://platform.openai.com/docs/models/gpt-3-5)�
 
 实验结果如下图所示。
 
-<img src="iShot_2023-10-18_20.19.09.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-18_20.19.09.png" />
 
 根据结果，作者给出4点发现：
 
 - LLMs在一些数据集上表现较好，如PubMed。对于为什么在Cora, Citeseer上比不过GNN，需要进一步研究。
 - LLMs一些错误的预测也是有道理的。在引文数据集上，一篇论文可以有多个类别，而数据集只选择其中一个作为标签（ground truth），但其实LLM的预测是对的。
 
-<img src="iShot_2023-10-18_20.25.33.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-18_20.25.33.png" />
 
 - CoT没有用
 - **LLM中可能存在测试数据的泄露**
@@ -295,7 +295,7 @@ LLM使用[GPT-3.5-turbo-0613](https://platform.openai.com/docs/models/gpt-3-5)�
 在OGBN-Arxiv引文数据集上，作者发现对计算机类论文使用一种特殊标签命名，可以显著提高LLM的预测准确率，怀疑是这种微小的改动唤醒了LLM的”记忆“。具体来说，作者试验了3种标签命名法：
 （1）使用Arxiv的原生命名，如”arxiv cs.CV“；（2）使用自然语言，如"computer vision"；（3）使用特殊的命名，即"arxiv cs subcategory"。结果显示第(3)种的准确率显著高于前两个，如下图所示：
 
-<img src="iShot_2023-10-18_20.37.53.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-18_20.37.53.png" />
 
 #### 加入图结构信息进行图节点分类
 
