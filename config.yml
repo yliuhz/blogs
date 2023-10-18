@@ -80,7 +80,7 @@ params:
     # theme params
     DisableLanguageSwitch: true
     TocOpen: true
-    TocSide: left
+    TocSide: right
     ShowToc: false
     EnableInstantClick: false
     EnableImageZoom: true
