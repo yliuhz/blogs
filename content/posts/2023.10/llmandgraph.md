@@ -307,7 +307,7 @@ LLM使用[GPT-3.5-turbo-0613](https://platform.openai.com/docs/models/gpt-3-5)�
 
 作者使用预测论文类别作为例子，说明问题的挑战性，对比了3种方法。(a) 将论文的标题和摘要文本作为prompt; (b) 使用现有工作{{< cite "1BNJOO4QD" >}}提供的prompt; (c) 使用本文微调的大模型。(b)的一个关键缺点是显著增大了token数目，容易受限于大模型的token限制。在这个例子中，只有本文的(c)预测正确论文的类别。
 
-<img src="iShot_2023-10-30_20.04.00.png" />
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-30_20.04.00.png" />
 
 > 本文在写作时没有注意对第一次出现的名词进行解释，如"graph token"。一些技术要点也没有详细阐述。
 
