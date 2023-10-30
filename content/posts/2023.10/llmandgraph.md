@@ -1,5 +1,5 @@
 ---
-title: "LLM and Graphs"
+title: "LLM for Graphs"
 date: 2023-10-10T22:17:37+08:00
 draft: true
 mathjax: true
@@ -298,4 +298,51 @@ LLM使用[GPT-3.5-turbo-0613](https://platform.openai.com/docs/models/gpt-3-5)�
 <img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-18_20.37.53.png" />
 
 #### 加入图结构信息进行图节点分类
+
+> 待补充内容...
+
+## GraphGPT: Graph Instruction Tuning for Large Language Models
+
+{{< cite "S9FrUa25" >}} 研究了构建对于不同图数据集和下游任务通用的图大模型。作者指出现有的自监督方法在生成节点表征后，仍然需要下游任务的标签做进一步微调，这限制了它们的泛化能力，因为高质量标签的获取是昂贵的（例如，推荐系统的冷启动，在新城市的交通流预测等）。受启发于大语言模型优秀的泛化性和零样本学习能力，本文设计了针对图结构的指令微调技术，对大语言模型进行微调。
+
+作者使用预测论文类别作为例子，说明问题的挑战性，对比了3种方法。(a) 将论文的标题和摘要文本作为prompt; (b) 使用现有工作{{< cite "1BNJOO4QD" >}}提供的prompt; (c) 使用本文微调的大模型。(b)的一个关键缺点是显著增大了token数目，容易受限于大模型的token限制。在这个例子中，只有本文的(c)预测正确论文的类别。
+
+<img src="iShot_2023-10-30_20.04.00.png" />
+
+> 本文在写作时没有注意对第一次出现的名词进行解释，如"graph token"。一些技术要点也没有详细阐述。
+
+### 解决方案 -- GraphGPT
+
+#### 将图结构编码和语言编码对齐
+
+作者使用图编码器将顶点映射到向量，使用文本编码器将描述顶点的文本映射到向量。
+
+#### 两阶段指令微调
+
+作者先使用“图匹配”无监督任务对新加的投射层进行微调，冻结LLM和图编码器的参数。投射层可以是简单的1层线性层。
+对于图中的每个顶点，随机采样$h$-跳的邻居构成子图。
+
+> 待补充内容...
+
+作者接着使用下游任务对新加的投射层进行微调，仍然冻结LLM和图编码器的参数。采样子图和prompt的策略相同，只是将问题替换为对应的下游任务，如节点分类、链路预测等。
+
+#### 加入链式思考（chain-of-thought, CoT）
+
+作者设计了CoT prompt。
+
+### 实验 -- GraphGPT
+
+本文的实验数据集完全采用了**引文数据集**，即OGB-ArXiv, PubMed和Cora。
+
+## Unifying Large Language Models and Knowledge Graphs: A Roadmap
+
+{{< cite "1pKPJvuH" >}}是一篇关于大语言模型和知识图谱的综述，讨论了3个问题：
+
+- 使用知识图谱加强LLM
+- 使用LLM对知识图谱数据增强
+- 协同LLM和知识图谱
+
+## One for All: Towards Training One Graph Model for All Classification Tasks
+
+{{< cite "JR6nEkYx" >}}提出并研究训练一个通用图分类（包括顶点、边、图级别）模型的问题。
 
