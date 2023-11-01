@@ -114,12 +114,14 @@ params:
 
             欢迎来到我的个人博客！欢迎讨论！
     socialIcons:
-        - name: github-simple
+        - name: github
           url: "https://github.com/yliuhz/"
         # - name: rss-simple
         #   url: "https://yliuhz.github.io"
-        - name: gmail
+        - name: email
           url: email
+        - name: linkedin
+          url: "https://www.linkedin.com/in/yliuhz/"
   
     editPost:
         URL: "https://github.com/yliuhz/blogs/tree/main/content"
