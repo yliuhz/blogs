@@ -4,6 +4,7 @@ date: 2023-07-27T15:04:29+08:00
 draft: true
 mathjax: true
 bibFile: bib/bib.json
+ShowToc: true
 ---
 
 论文发现于 [Awesome-Knowledge-Graph-Reasoning Github 仓库地址](https://github.com/LIANGKE23/Awesome-Knowledge-Graph-Reasoning)。
@@ -210,3 +211,63 @@ $$W_p(\mu,\nu)=OT(\mu,\nu;\parallel \cdot\parallel_p^p)^{1/p}$$
 #### 对齐多模态表征
 
 假设现在要对齐语言表征$e_I$到$e_S$。
+
+## GraphAdapter: Tuning Vision-Language Models With Dual Knowledge Graph
+
+{{< cite "tTOo1TeT" >}} 首次研究了使用图结构优化CLIP的微调。
+
+### 现有微调CLIP方法面临的挑战
+
+微调模型时假设只拥有少量的下游任务数据。传统微调方法微调模型的所有参数，小数据下很容易过拟合。为此产生了高效迁移学习（efficient transfer learning, EFL）的概念，即只微调预训练模型的小部分参数。
+
+现有ETL方法可分为两类。第一类是提示微调，第二类是适配微调。
+
+提示微调方法在输入端加入**可训练的提示词**，代表工作是CoOp。然而，这类方法需要训练的每次迭代传入提示词，需要更多的文本提示数据。
+
+适配微调方法只使用一次文本编码器，针对下游任务的微调更加数据高效。代表工作有CLIP-Adapter，TaskRes等。另有一些工作利用数据/文本大模型提供的先验进一步提升效果，代表工作有Tip-Adapter。
+
+然而，上述适配微调方法仍面临两大挑战：（1）只使用单一模态的下游任务数据；（2）未关注下游任务的结构信息（如不同类别/语义之间的联系）。这促使作者使用图来增强微调效果。
+
+### 解决方案 -- GraphAdapter
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-11-09_20.19.29.png" />
+
+#### CLIP (Contrastive Language-Image Pre-training)
+
+CLIP顾名思义，使用对比学习loss在40万对文本-图片数据上进行预训练。CLIP同时包含文本编码器和图片编码器。
+
+在测试阶段，对于图片的$K$个类别，输入$K$条"a photo of a [class]"格式的提示词到文本编码器，得到$K$个类别的文本表征$\\{z_t^k\\}_{k=1}^K$。
+相对应的，输入到图片编码器的图片可以得到图片表征$z_v$，图片的类别由下式计算：
+
+$$P(y=c|z_v)=\frac{\exp(sim(z_v,z_t^c))/\tau}{\sum_{k=1}^K\exp(sim(z_v,z_t^k))/\tau}\tag{14}$$
+
+其中$sim$表示余弦相似度，$\tau$表示温度参数。该式计算了图片属于类别$c$的概率，取最大概率对应的类别即为模型的预测标签。
+这表明本文关注的是**图片分类**下游任务。
+
+#### 构建文本知识图
+
+文本知识图$G_t=\\{C_t,E_t\\}$。其中$C_t$表示顶点集，包含$K$个顶点，每个顶点对应一个类，即$C_t=\\{c_t^i\\}_{i=1}^K\in\mathbb{R}^{K\times d}$。每个$c_i$由其类别的提示文本的表征得到。边集由每对顶点之间的余弦相似度得到，即：
+
+$$E_t=\\{e_t^{i,j}\\},e_t^{i,j}=\frac{c_t^ic_t^{j^T}}{|c_t^i|\cdot|c_t^j|},i,j\in[1,K]$$
+
+是一个全连接的稠密图。
+
+#### 构建视觉知识图
+
+视觉知识图$G_v=\\{C_v,E_v\\}$的顶点集仍然包含对应$K$个类的$K$个顶点，边仍然由顶点的余弦相似度计算。先将图片输入图片编码器，再计算每个类别图片的平均表征作为该类别的顶点。
+
+#### 使用图辅助适配微调
+
+我们已经有了两个模态的知识图$G_t,G_v$。在微调阶段，文本提示词首先经过文本编码器得到表征$z_t$，插入到两张图中作为新的顶点，如下所示：
+
+$$
+\begin{aligned}
+C_{tt}=[z_t,C_t],&C_{vt}=[z_t,C_v] \\\
+E_{tt}=\begin{bmatrix}1&sim(z_t,C_t)\\\ sim(C_t,z_t)&E_t \end{bmatrix} ,&E_{vt}=\begin{bmatrix}1&sim(z_t,C_v)\\\ sim(C_v,z_t)&E_v \end{bmatrix} \\\
+\end{aligned}
+$$
+
+接着，分别在两张图上应用GCN，得到两个文本提示表征$z_{tt},z_{vt}$。
+取加权平均得到$z_t'=\beta\cdot z_{tt}+(1-\beta)\cdot z_{vt}$，并最终加入残差连接$z_t^*=\alpha z_t+(1-\alpha)z_t'$。
+
+在微调过程中只有两个GCN的参数是可训练的。训练损失是针对图片分类任务的交叉熵，预测标签由上述(14)式计算。
