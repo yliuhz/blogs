@@ -271,3 +271,7 @@ $$
 取加权平均得到$z_t'=\beta\cdot z_{tt}+(1-\beta)\cdot z_{vt}$，并最终加入残差连接$z_t^*=\alpha z_t+(1-\alpha)z_t'$。
 
 在微调过程中只有两个GCN的参数是可训练的。训练损失是针对图片分类任务的交叉熵，预测标签由上述(14)式计算。
+
+## Relation-aware Ensemble Learning for Knowledge Graph Embedding
+
+{{< cite "1BEL7Xyvz" >}} 研究了基于集成学习的知识图谱表征方法。通过将不同关系的验证过程并行化，大大提升了集成学习的速度。
