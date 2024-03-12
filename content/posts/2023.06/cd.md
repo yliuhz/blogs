@@ -132,3 +132,27 @@ $$
 作者整理了优化模块度的方法面临的局限性，以及相对应的，推断型方法如何解决了这些问题：
 
 <img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-09-03_11.54.10.png" />
+
+## Faster unfolding of communities: speeding up the Louvain algorithm
+
+{{< cite "DILKu5TG" >}} 研究了进一步加速Louvain算法，声明理论上将时间复杂度从$O(m)$降到$O(n\log k)$，其中$k$表示平均顶点度。
+Louvain算法是一个优化目标函数的方法，目标函数可以是模块度Modularity, Potts models, significance, surprise, infomap等。
+
+Louvain算法的伪代码描述如下：初始化每个顶点单独一个社区。每次随机挑选一个顶点，移动(MoveNodes)到使目标函数增长的社区。当移动单个顶点的社区无法增大目标函数时，将属于相同社区的顶点合并(Aggregate)为一个新顶点，得到新的图，重复迭代。
+注意到MoveNodes函数中每次循环挑选随机的顶点$v$，与[python-louvain软件包](https://github.com/taynaud/python-louvain)的实现一致。
+
+<img src="Snipaste_2024-01-02_20-44-05.png" width=80% />
+
+### 优化：遍历邻居社区-->随机挑选邻居社区
+
+原始Louvain算法的SelectCommunity函数需要遍历顶点所有的邻居，选择使目标函数增长最大的邻居社区。如下所示。在第一轮移动社区时占用了95%的时间。
+
+<img src="Snipaste_2024-01-02_20-53-11.png" width=80% />
+
+然而，初始时每个顶点处于单独社区，任何移动都很大可能优化目标函数。在算法迭代几次后，许多邻居顶点很有可能位于同一社区。因此，在初始时遍历所有邻居是不必要的。作者于是提出更简单的随机选择社区方法。如果移动到随机挑选的邻居社区能带来优化，则移动；否则不移动。
+
+注意：随机挑选邻居顶点，再考察它的社区；而不是随机挑选邻居社区。前者对于社区的采样与位于该社区的邻居个数正相关，而后者是对邻居社区均匀采样，不是我们想要的。
+
+
+
+
