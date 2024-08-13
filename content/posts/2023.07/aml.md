@@ -92,3 +92,91 @@ $$
 <img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/iShot_2023-10-10_22.04.46.png" />
 
 本文实际上写了3个技术贡献点，分别为PPR采样、分类器指导扩散过程，以及GNN权重共享。但消融实验显示第三个贡献点会导致准确率变差？
+实际上第三个贡献点在于加速模型训练，但会导致准确率变差。
+
+## Consistency Training with Learnable Data Augmentation for Graph Anomaly Detection with Limited Supervision
+
+{{< cite "EdWYslIq" >}}研究半监督图异常检测问题。作者发现异常点和正常点的一节邻居标签分布相似，从而设计新的图神经网络层ConsisGNN。并且在训练时将节点mask向量加入可训练参数，从而达到自动化数据增强的目标。一致性训练属于[半监督训练的技巧](https://github.com/iBelieveCJM/Tricks-of-Semi-supervisedDeepLeanring-Pytorch)。
+
+
+
+## Realistic Synthetic Financial Transactions for Anti-Money Laundering Models
+
+{{< cite "Yfy2yMFF" >}} 人工合成数据用于训练反洗钱模型。作者使用合成数据的动机有3条：
+
+- 每个银行只有用户在行内的交易数据，不能看到用户和其他银行的交易数据
+- 真实数据的洗钱标签是不完整的，因为许多洗钱行为没有被发掘
+- 在真实数据上做反洗钱建模需要额外的步骤
+
+如果人工合成的数据可以充分拟合真实数据中的交易行为，那么将有如下的好处：（1）标签可以是完整的；（2）可以模拟验证假设所有银行都共享数据，那么集中构建的模型带来的性能提升有多大。可以假设每个银行只拥有一个子图。
+
+### 有向多重图
+
+金融交易数据可以用有向多重图建模，其中**节点**表示银行账户，**边**表示交易行为。每次交易形成一条连边，即边上带有时间戳信息，因此形成有向多重图。如下图所示。每条边代表的交易被分类为"正常"或"洗钱"交易，因此是边分类问题。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-13_10-51-47.png" />
+
+### 洗钱的八大模式
+
+- Fan-out: 从一个节点指向多个($\ge 2$)其他节点
+- Fan-in: 从多个($\ge 2$)节点指向一个节点
+- Gather-scatter: Fan-in后Fan-out
+- Scatter-gather: Fan-out后Fan-in
+- Simple cycle: 闭环，资金经过周转后回到起点账户
+- Random: 与cycle类似，区别在资金最终没有回到起点账户
+- Bipartite: 从一个节点集合指向另一个节点集合
+- Stack: 两个bipartite模式拼接起来
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-13_10-45-44.png" />
+
+在八大模式中，所有的洗钱用户实际控制了洗钱交易路径上的所有账户。例如，洗钱用户有空壳公司，名义上路径上的账户"归属"空壳公司，但实际归属于洗钱用户。
+
+### 金融数据合成器AMLWorld
+
+洗钱周期包含3部分：（1）不合法的收入来源，如走私；（2）将不合法资金混进金融系统；（3）支出不合法资金
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-13_12-06-29.png" />
+
+AMLWorld考虑多类型的用户实体，如个体户和公司账户。交易行为包括发工资，交罚款，买东西等。不合法资金来源包括9个：敲诈勒索、放高利贷、赌博、卖淫、绑架、抢劫、贪污、毒品和走私。每个实体在每个时间戳通过图中的A和B生成交易数据。A/B路径中每个节点的yes/no选择基于预定义的**统计分布**。AMLWorld采用严格的方式对洗钱行为打标签。具体来说，假设账户P向账户Q支付100元不合法来源的资金，Q向W支付其中的50元，W向Y支付50元中的25元，那么路径上的所有交易即P-Q, Q-W, W-Y都被标记为"洗钱"行为，原因是资金的来源（100元）是不合法的。AMLWorld在打标签时完全考虑资金的来源。*如果交易的资金包含合法和不合法来源，那么该笔交易仍然被标记为洗钱*。
+
+AMLWorld根据美联储2019年公开报告数据设计交易的**统计分布**，包括单个账户的交易数量，交易方式（现金、电汇和支票等）的分布，交易金额的分布。洗钱行为除了服从八大模式外，还包含大量其他伪装后的交易行为。如下表所示，全部100K的洗钱行为中，只有19K服从八大模式，其余81K交易伪装成正常交易，如公司发工资或采购物品等。本文开源了3中规模的合成数据，每种规模包含两种洗钱交易的比例（高洗钱比例/低洗钱比例）。如下表所示。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-13_12-37-35.png" />
+
+### 现有模型效果测试
+
+#### 实验设置
+
+本文验证图神经网络模型和树分类模型对于洗钱交易检测的效果。
+
+- 梯度增强树GBT：LightGBM和XGBoost。为了使GBT模型能利用图结构信息，额外使用GFP {{< cite "3D4nhcoE" >}} 生成图结构特征。GFP采用一个batch的边作为输入，将输入边插入到GFP内部的图结构中，输出GFP内部图结构的特征，如scatter-gather结构的数量，temporal cycle的数量，simple cycle的数量等。由此可见，GFP逐渐丰富内部图的结构。输入边按照时间戳进行排序。按照下述数据划分，训练集不会使用验证/测试集生成特征。
+- 消息传播型图神经网络GNN：
+  - GIN with edge features 
+  - GIN + EU (edge_updates) {{< cite "vU3izXD5" >}}
+  - PNA {{< cite "CVg73F4B" >}}
+
+每个GNN模型包含边的读出(readout)层，它的输入是边的表征和两个端点的表征，输出边的最终表征。在训练GNN模型时，采样100个1-跳邻居和100个2-跳邻居，但仍然无法在最大的合成数据集HI-Large和LI-Large上训练。
+
+由于洗钱标签相对于正常标签的极度不均衡性，本文使用洗钱标签的F1-Score (Minority Class F1 Score)作为评估模型的指标。
+
+GBT的数据划分采用时间维度的训练/验证/测试数据划分。每个划分内的节点（表示账户）个数相同，区别在于连边（表示交易）。锚定两个时间点$t_1$和$t_2$，则
+
+- $t_1$之前的交易用于训练
+- $t_1$和$t_2$中间的交易用于验证
+- $t_2$之后的交易用于测试
+
+GNN的数据划分与GBT类似：
+
+- 训练图只包含$t_1$之前的交易，全部用于训练
+- 验证图包含$t_2$之前的交易，只有$t_1$和$t_2$中间的交易用于验证
+- 测试图包含全部交易，只有$t_2$之后的交易用于测试
+
+#### 实验结果
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-13_13-00-06.png" />
+
+表2说明树模型最优。
+
+表3使用HI数据训练，在LI上测试（或在LI上微调后测试）。HI数据集包含更多比例的洗钱交易。结果显示大多数模型相比只在LI数据上训练（表2）有较大提升。
+
+图6模拟现实场景，每个银行只有行内的交易数据。分3种情况：（1）私有数据且私有模型；（2）私有数据但共享模型，即共享GFP的输出；（3）共享数据且共享模型。结果对应的模型是GFP+LightGBM。结果显示共享的越多模型效果越好。

@@ -62,3 +62,7 @@ $$\Delta Z=\Delta Z_l+\Delta Z_g$$
 
 实测：在单张4090 GPU上生成1秒12帧的视频需要20分钟。
 
+
+## One-Step Image Translation with Text-to-Image Models
+
+{{< cite "J0Nrj2s8" >}}
