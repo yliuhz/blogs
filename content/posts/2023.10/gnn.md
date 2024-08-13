@@ -138,3 +138,107 @@ $$
 $$x*g=\theta(I_n+D^{-1/2}AD^{-1/2})x$$
 
 实际应用中，$I_n+D^{-1/2}AD^{-1/2}$会导致算术不稳定，因此GCN使用$\tilde{D}^{-1/2}\tilde{A}\tilde{D}^{-1/2}$进行替换。
+
+## GAT: Graph Attention Networks
+
+{{< cite "XxQOzz4E" >}} 提出GAT, 在GCN的基础上添加可训练的attention权重。具体来说，GAT层的输入是节点的特征向量$h_i$，输出是聚合邻居信息后的节点特征向量$h_i'$. 
+
+$$h\_i'=\sigma\left(\sum\_{j\in\mathcal{N}\_i}\alpha\_{ij}Wh\_j\right)\in\mathbb{R}^{2F'}$$
+
+其中的权重$\alpha_{ij}\in\mathbb{R}$是当前节点的特征$Wh_i$与邻居节点特征$Wh_j$的函数：
+
+$$\alpha_{ij}=\frac{\exp(\text{LeakyReLU}(a^T[Wh_i\Vert Wh_j]))}{\sum_{k\in\mathcal{N}_i}\exp(\text{LeakyReLU}(a^T[Wh_i\Vert Wh_j]))}$$
+
+其中$a\in\mathbb{R}^{2F'}$是单层全连接网络的参数。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-13_16-49-38.png" />
+
+多头注意力机制可以使训练更稳定，输出是对所有输出头进行平均：
+
+$$h_i'=\sigma\left(\frac{1}{K}\sum_{k=1}^K\sum\_{j\in\mathcal{N}\_i}\alpha^k\_{ij}W^kh\_j\right)\in\mathbb{R}^{2F'}$$
+
+GAT中用于计算attention系数的$a\in\mathbb{R}^{2F'}$对所有边共享。这带来的一个好处是GAT可以直接应用于inductive归约的设定，即测试时的图结构在训练时不可见。
+
+
+## GIN: How Powerful are Graph Neural Networks?
+
+{{< cite "104xo4Pb2" >}}提出分析GNN表达能力的通用理论框架。作者发现现有GNN经常欠拟合训练数据，因此研究GNN的表达能力并设计理论上表达能力最强的GNN。
+
+### 图同构问题和1-WL test
+
+[维基百科的问题定义](https://en.wikipedia.org/wiki/Graph_isomorphism)：给定两个图$G,H$, 我们称$G$和$H$同构，如果存在一个双射$f:V(G)\mapsto V(H)$, 使得边$\langle u,v\rangle\in E(G)$当且仅当边$\langle f(u),f(v)\rangle\in E(H)$。
+
+下面的例子中两个图看起来很不一样，但其实是同构的。
+
+<figure>
+  <img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-13_20-40-40.png" />
+  <figcaption>图片来源：<a href="https://en.wikipedia.org/wiki/Graph_isomorphism">维基百科</a></figcaption>
+</figure>
+
+是否存在多项式时间的算法能精确解决图同构问题是未知的。1-dimensional Weisfeiler-Leman (1-WL) test是用于图同构问题的启发式算法。1-WL test可以分辨大多数不同构的图结构，但存在一些极端的不同构的例子1-WL test无法分辨。如果1-WL test输出两个图结构不同构，那么它们一定是不同构的，但反过来不一定成立。1-WL test的算法过程与GNN的消息传递机制类似，因此常用于分析GNN的表达能力 {{< cite "1ETNH5u2u" >}}。
+
+1-WL算法采用一个图作为输入，输出排序的节点标签。为了执行1-WL test比较两个图是否同构，分别对两个图执行1-WL算法，比较输出是否相同。
+
+1-WL算法依赖一个单射函数作为哈希hash函数，即对于不同的输入，hash函数的输出必须是不同的。Hash函数用于给节点打标签。1-WL初始化每个节点具有相同的id，所以初始时每个节点具有相同的hash标签。接着，在每一轮，对于每个节点，将当前节点的标签和1阶邻居的标签拼接起来，排序，输入hash函数产生当前节点新的标签。如果发现更新后的节点标签分布（即标签排序后每个标签对应节点的个数）相较于更新前没有变化，那么算法终止。1-WL算法最终输出标签及对应的节点个数。算法的Python实现见[链接](https://github.com/TNanukem/paper_implementations/blob/main/Weisfeiler%20Lehman%20Isomorphism%20Test.ipynb)。
+
+### GNN表达能力的分析框架
+
+通过readout读出函数，GNN将输入的图结构映射到图表征向量。理想情况下，对于不同构的两个图结构，GNN应该将它们映射到不同的表征向量；反之对于同构的图结构应映射到相同的表征向量。这意味着希望GNN解决图同构问题。
+
+首先，引理2证明了对于不同构的两个图$G_1,G_2$, 如果GNN能将它们映射到不同的表征向量，那么1-WL test同样能判别它们不同构。这意味着GNN至多具有1-WL test分辨不同构图结构的能力。
+
+大多数消息传递GNN可以概括为如下形式：
+
+$$\begin{aligned}a_v^{(k)}&=\text{AGGREGATE}\left(\left\\{h_u^{(k-1)}:u\in\mathcal{N}(v)\right\\}\right) \\\ h_v^{(k)}&=\text{COMBINE}(h_v^{(k-1)},a_v^{(k)})\end{aligned}$$
+
+其中$a_v^{(k)}$通过$\text{AGGREGATE}$聚合上一轮邻居的特征，$h_v^{(k)}$通过$\text{COMBINE}$聚合上一轮目标节点的特征与聚合后的邻居的特征。
+
+定理3希望找到一种强大的GNN推导引理2的反定理。定理3证明了对于1-WL test能够分辨的不同构图结构$G_1,G_2$，在GNN堆叠层数够多时，当$\text{AGGREGATE}$，$\text{COMBINE}$和readout函数满足下列条件时，GNN能将$G_1,G_2$映射到不同的表征向量：
+
+- $\text{AGGREGATE}$，$\text{COMBINE}$都是单射
+- readout函数是单射
+
+通过定理3定义的GNN具有与1-WL test相同的判别不同构图结构的能力。
+
+GNN相比1-WL test的好处是可以通过输出的表征向量计算相似性，而1-WL test只能用于分辨不同构的图结构，无法计算相似性。
+
+### GIN
+
+根据定理3，需要设计$\text{AGGREGATE}$，$\text{COMBINE}$满足单射函数。引理5证明了存在一个函数$f$使得$\text{AGGREGATE}=\sum_{x\in X}f(x)$是单射函数；
+推论6证明了存在函数$f,\phi$和常数$\epsilon$，使得$\text{COMBINE}=\phi((1+\epsilon)\cdot f(c)+\sum_{x\in X}f(x))$是单射函数。
+
+由于MLP可以拟合任意函数 {{< cite "SfavsEd8" >}}，以及上述$f,\phi$的存在性，作者定义GIN层的计算公式为
+
+$$h_v^{(k)}=\text{MLP}^{(k)}\left((1+\epsilon^{(k)})\cdot h_v^{(k-1)}+\sum_{u\in\mathcal{N}(v)}h_u^{(k-1)}\right)$$
+
+*如果初始节点特征是独热one-hot向量，那么求和前不需要MLP，因为对独热向量求和本身就是单射。（否则需要MLP？）*
+
+readout函数也需要是单射. GIN的readout函数定义为
+
+$$h_G=\text{CONCAT}\left(\text{READOUT}\left(\left\\{h_v^{(k)}|v\in G\right\\}\right)|k=0,1,...,K\right)$$
+
+其中$K$表示GIN的层数。
+
+### GCN和GraphSAGE表达能力不如GIN的原因
+
+许多GNN使用1层感知机($\sigma\circ W$)而不是MLP(多层感知机)。引理7证明了存在一类输入$X$使得任何1层感知机在$X$上都不是单射。
+
+GCN使用$\text{MEAN}$作为$\text{AGGREGATE}$，GraphSAGE使用$\text{MAX}$，它们都不如GIN使用的$\text{SUM}$，如下图所示。$\text{SUM}$能够分辨一些$\text{MEAN}$和$\text{MAX}$无法分辨的结构和特征分布。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-13_22-53-11.png" />
+
+### 实验设置
+
+本文使用图分别任务。数据集包含4个生物信息数据集和5个社交网络数据集。为了使模型完全从图结构中学习，作者删除原始的节点特征。在生物信息图上，节点带有类别特征；在社交网络上，节点没有特征。然而GNN包括GIN需要初始节点特征，因此对于社交网络，一部分数据集将所有节点赋予相同的特征，另一部分使用节点度的独热one-hot向量作为特征。
+
+GIN的一个变体GIN-0将原本可训练的参数$\epsilon$固定为0.
+
+### 实验结果
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-13_22-59-55.png" />
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-13_23-00-19.png" />
+
+图4说明GIN能更好得拟合训练数据，因此表达能力更强。
+
+表1说明GIN在测试集上具有较好的泛化能力，尽管这一点并没有理论证明。
