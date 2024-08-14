@@ -275,3 +275,19 @@ $$
 ## Relation-aware Ensemble Learning for Knowledge Graph Embedding
 
 {{< cite "1BEL7Xyvz" >}} 研究了基于集成学习的知识图谱表征方法。通过将不同关系的验证过程并行化，大大提升了集成学习的速度。
+
+## Translating Embeddings for Modeling Multi-relational Data
+
+{{< cite "IgrRizxk" >}} 提出无监督的知识图谱表征模型TransE. 作者认为知识图谱中有关系连边的两个实体的表征向量应尽可能接近。
+
+具体来说，对于一个三元组$(h,l,t)\in G$，其中$h,l\in E$表示实体(Entity，注意与普通图的符号表示区分)，$l\in L$表示关系连边，用$\mathbf{h},\mathbf{l},\mathbf{t}$分别表示它们的表征向量，那么
+
+$$\mathbf{h}+\mathbf{l}=\text{top-1 nearest neighbor of } \mathbf{t}$$
+
+在训练TransE时，首先把实体和关系的表征随机初始化，接着采样一个batch的三元组作为正样本，再采样相同数量的三元组作为负样本，其中负样本三元组中的一个实体的表征修改为随机表征。使用如下损失函数和随机梯度下降更新实体和关系的表征向量：
+
+$$\mathcal{L}=\sum_{(h,l,t)\in S}\sum_{(h',l,t')\in S'\_{(h,l,t)}}[\gamma+d(\mathbf{h}+\mathbf{l},\mathbf{t})-d(\mathbf{h'}+\mathbf{l},\mathbf{t'})]_+$$
+
+其中$d(\mathbf{x},\mathbf{y})=\Vert\mathbf{x}-\mathbf{y}\Vert_p$表示Lp-norm，$[x]_+$*表示ReLU函数*，$S'\_{(h,l,t)}=\\{(h',l,t)|h'\in E\\}\cup\\{(h,l,t')|t'\in E\\}$表示只修改三元组的一个端点实体。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-14_21-31-35.png" />

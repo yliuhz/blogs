@@ -242,3 +242,7 @@ GIN的一个变体GIN-0将原本可训练的参数$\epsilon$固定为0.
 图4说明GIN能更好得拟合训练数据，因此表达能力更强。
 
 表1说明GIN在测试集上具有较好的泛化能力，尽管这一点并没有理论证明。
+
+## Relational inductive biases, deep learning, and graph networks
+
+{{< cite "vU3izXD5" >}}
