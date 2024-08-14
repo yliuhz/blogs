@@ -284,7 +284,7 @@ $$
 
 $$\mathbf{h}+\mathbf{l}=\text{top-1 nearest neighbor of } \mathbf{t}$$
 
-在训练TransE时，首先把实体和关系的表征随机初始化，接着采样一个batch的三元组作为正样本，再采样相同数量的三元组作为负样本，其中负样本三元组中的一个实体的表征修改为随机表征。使用如下损失函数和随机梯度下降更新实体和关系的表征向量：
+在训练TransE时，首先把实体和关系的表征随机初始化，接着采样一个batch的三元组作为正样本，再将正样本三元组中随机一个端点实体的表征扰动（修改为随机表征）后作为负样本。使用如下损失函数和随机梯度下降更新实体和关系的表征向量：
 
 $$\mathcal{L}=\sum_{(h,l,t)\in S}\sum_{(h',l,t')\in S'\_{(h,l,t)}}[\gamma+d(\mathbf{h}+\mathbf{l},\mathbf{t})-d(\mathbf{h'}+\mathbf{l},\mathbf{t'})]_+$$
 
