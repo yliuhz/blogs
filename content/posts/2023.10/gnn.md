@@ -1,5 +1,5 @@
 ---
-title: "A Review of Graph Encoders"
+title: "A Review of Graph Neural Networks"
 date: 2023-10-04T16:40:22+08:00
 draft: true
 mathjax: true
@@ -246,3 +246,8 @@ GIN的一个变体GIN-0将原本可训练的参数$\epsilon$固定为0.
 ## Relational inductive biases, deep learning, and graph networks
 
 {{< cite "vU3izXD5" >}}
+
+## Graph Neural Networks with Adaptive Readouts
+
+{{< cite "1GLF7J729" >}} 
+

@@ -203,3 +203,5 @@ $$G_1\sim hh_{\alpha}(G;p_1),G_2\sim hh_{\alpha}(G;p_2)$$
 ### 理解Half-Hop
 
 Half-Hop本身特别简单，作者花费另一个章节描述如何理解它的作用。
+
+
