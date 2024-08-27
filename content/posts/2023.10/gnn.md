@@ -251,3 +251,44 @@ GIN的一个变体GIN-0将原本可训练的参数$\epsilon$固定为0.
 
 {{< cite "1GLF7J729" >}} 
 
+## GraphSNN: A New Perspective on "How Graph Neural Networks Go Beyond Weisfeiler-Lehman?"
+
+{{< cite "Ma4dCwtS" >}} 提出了比GIN表达能力更强的GraphSNN，在节点分类和图分类任务上均比GIN有更好的表现，同时保留了较好的时间效率。对于图中的节点$i,j$，考虑它们的1阶邻居子图$S_i$，即$\tilde{N}(i)=\\{v\in V|(i,v)\in E\\}\cup \\{i\\}$导出的子图，作者定义了三种同构模式：
+
+- 子图同构：$S_i$和$S_j$是同构的，且对应节点的特征向量相同；
+- 重叠同构：对于$i$的任意1阶邻居$v'$，存在$j$的1阶邻居$u'$，使得$S_{iv'}=S_i\cap S_{v'}$与$S_{ju'}=S_j\cap S_{u'}$是同构的，且对应节点的特征向量相同；
+- 子树同构：对于$i$的任意1阶邻居$v'$，存在$j$的1阶邻居$u'$，只满足$v',u'$的特征向量相同。
+
+子图同构的条件最强，最弱的是子树同构。如下图所示，左图中不满足子图同构，但满足重叠同构；右图不满足重叠同构，但满足子树同构。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-27_11-51-53.png" />
+
+作者证明了GIN只能分辨子树不同构的节点。为了更好分辨两个节点的一阶邻居子图，作者希望定义一个数值参量衡量两个节点的邻居子图相似性：$\omega: \mathcal{S}\times \mathcal{S}^*\to \mathbb{R}$，其中$\mathcal{S}=\\{S_v|v\in V\\},\mathcal{S}^\*=\\{S_{vu}|(v,u)\in E\\}$。$\omega$将目标节点的1阶邻居子图和目标节点与邻居节点的重叠子图映射到一个相似度数值，它衡量了目标节点和邻居节点的**结构相似性**。这样，GraphSNN可以从相似度高的邻居聚合更大比例的特征。
+
+对于目标节点$v$和它的两个邻居$u,u'$，$\omega$需要满足3个性质：
+
+- 局部紧密性：如果$S_{vu},S_{vu'}$都是完全图，但$S_{vu}$有更多的节点，那么$\omega(S_v,S_{vu})>\omega(S_v,S_{vu'})$;
+- 局部稠密性：如果$S_{vu},S_{vu'}$有相同个数的节点，但$S_{vu}$有更多的边，那么$\omega(S_v,S_{vu})>\omega(S_v,S_{vu'})$;
+- 同构不变性：如果$S_{vu},S_{vu'}$同构，那么$\omega(S_v,S_{vu})=\omega(S_v,S_{vu'})$。
+
+下图展示了性质1和性质2的例子。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-27_12-14-59.png" />
+
+作者给出了一个$\omega$的例子：
+
+$$\omega(S_v,S_{vu})=\frac{|E_{vu}|}{|V_{vu}|\cdot |V_{vu}-1|}|V_{vu}|^{\lambda}$$
+
+其中$V_{vu},E_{vu}$分别表示$S_{vu}$的顶点集和边集，$\lambda>0$是超参。GraphSNN基于$\omega$定义：
+
+$$h_{v}^{t+1}=\text{MLP}\left(\gamma^{(t)}\left(\sum_{u\in\mathcal{N}(v)}\tilde{A}\_{vu}+1\right)h_v^{(t)}+\sum_{u\in\mathcal{N}(v)}\left(\tilde{A}_{vu}+1\right)h_v^{(t)}\right)$$
+
+其中$\tilde{A}\_{vu}$对每个节点$v$的邻居节点相似度做了归一化，即
+
+$$\tilde{A}\_{vu}=\frac{\omega(S_v,S_{vu})}{\sum_{u'\in\mathcal{N}(v)}\omega(S_v,S_{vu'})}$$
+
+作者证明了GraphSNN相比1-WL test具有更强的分辨非同构子图的能力，因此强于GIN。实验结果也显示GraphSNN在节点分类和图分类任务上都有更好的准确度，如下图所示。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-27_12-25-11.png" />
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-27_12-25-19.png" />
