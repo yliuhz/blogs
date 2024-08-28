@@ -184,3 +184,15 @@ GNN的数据划分与GBT类似：
 ## Rethinking Graph Neural Networks for Anomaly Detection
 
 {{< cite "lCx0Rztr" >}} 发现在正常图中加入异常点后，谱能量会更多偏向特征值高的区域。基于这种观察，作者设计BWGNN，能够更灵活建模当前节点和邻居节点的关系（相似/不相似）。
+
+## SEFraud: Graph-based Self-Explainable Fraud Detection via Interpretative Mask Learning
+
+{{< cite "9Vh0zoEr" >}} 设计了异构图异常点检测方案SEFraud，通过同时训练对原始节点特征和边特征的mask向量实现结果的可解释性。
+
+SEFraud将初始特征、GNN的输出embedding和节点种类编码拼接后，经过MLP预测得到节点的mask向量；将边的两个端点的embedding和边种类编码拼接后，经过MLP预测得到边的mask向量。每个种类的节点共用一个MLP，每个种类的边共用一个MLP。节点的MLP应对特征的每个维度输出一个重要性分数，因此输出是$d$维；边的MLP应对每条边输出一个重要性分数，因此输出是$1$维。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-27_20-24-56.png" />
+
+
+得到节点mask向量后，与原始特征点乘得到新的节点特征；得到边mask后，得到每条边的权重。
+作者认为mask向量能帮助提升检测效果。因此，将使用mask的节点标签输出作为正样本，将mask取反后的节点标签输出作为负样本，构建对比学习损失函数，与分类损失函数一起优化。
