@@ -211,3 +211,15 @@ $$\max_{G_S}MI(Y,(G_S,X_S))=H(Y)-H(Y|G=G_S,X=X_S)$$
 对于“后解释”模型，即在GNN训练好后冻结GNN权重，训练其他模型作为GNN的解释器方法，$H(Y)$对于给定的输入是确定的，因此最大化互信息等价于最小化$H(Y|G=G_S,X=X_S)$。
 
 <img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-28_15-41-19.png" />
+
+在实验中，GNNExplainer在随机图上随机选定节点连边特定子图结构（motif），并将选定的节点打上motif的标签。GNN在预测选定节点的标签时，解释器应该返回motif的结构作为与未选定节点区别最大的最重要子图结构。在下图中，红色节点是目标节点（也是被选定的节点），可以看到GNNExplainer相比基线方法更准确地返回motif结构。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-28_16-04-34.png" />
+
+## Partitioning Message Passing for Graph Fraud Detection
+
+{{< cite "U7YTzPoR" >}} 认为GCN在消息传递时对所有邻居节点共用权重矩阵是次优的，因此利用训练集已知的节点标签将邻居划分为正常、异常和未知，将全部邻居共用权重矩阵修改为同一类邻居共享权重矩阵：$W_{be}, W_{fr}, W_{un}$。其中未知邻居的权重矩阵$W_{un}$由前两个的线性组合得到，即$W_{un}=\alpha W_{fr}+(1-\alpha)W_{be}$，这是因为未知并不代表它们属于第三类。
+
+另外，作者可能参考GAT中attention的计算方法，使用额外的MLP对每个节点计算权重矩阵，不过都由共享的MLP计算得来.
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-28_18-01-52.png" />
