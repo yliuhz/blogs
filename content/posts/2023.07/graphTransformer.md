@@ -204,4 +204,38 @@ $$G_1\sim hh_{\alpha}(G;p_1),G_2\sim hh_{\alpha}(G;p_2)$$
 
 Half-Hop本身特别简单，作者花费另一个章节描述如何理解它的作用。
 
+## Attending to Graph Transformers
 
+{{< cite "3Efib1cu" >}} 是图transformer的一篇综述。除此之外，较早的 {{< cite "1C6MgIATQ" >}}, {{< cite "cS3yutP1" >}} 和 {{< cite "Gmqyhzdm" >}} 从不同角度对图transformer进行综述。
+
+图transformer（GT）的提出是为了解决消息传递图神经网络（MPNN）的以下缺陷：
+
+- over-smoothing: 
+- under-reaching: 
+- over-squashing: 
+
+GT通过考虑每对顶点之间的消息传递，不再局限于给定连边结构，从而缓解上述问题。然而，为了使GT能同时利用原始连边结构信息，对原图结构和位置的编码至关重要。当这两种编码足够准确时，GT具有最强的表达能力；然而，MPNN在给定足够准确的编码时也具有相同的表达能力。因此，作者认为在表达能力（即分辨不同构图的能力）上GT对MPNN没有优势。
+
+通过对原图添加虚拟节点与所有真实节点连接，MPNN可以近似GT。这表明GT和MPNN是紧密相关的。
+
+GT已在多领域有实际应用：
+
+- brain networks 性质预测
+- 预测分子的量子力学性质
+- 大规模异构学术网络节点分类和链路预测 {{< cite "UKxHFtGR" >}}
+- 图序列化 {{< cite "10npKZMuY" >}}
+- 谣言检测 {{< cite "152SB49S9" >}}
+- 晶体属性预测
+- 点击率预测
+- 单一图像三维人体姿态和网格重建 
+
+### 实验结论一：GT比GIN有更强的检测不同构图的能力
+
+本部分考虑三个任务：（1）**检测连边**：模型判断两个节点是否有连边；（2）**数三角形**；（3）**区分Circular Skip Links(CSL)图**。
+考虑随机游走结构编码（RWSE）和拉普拉斯位置编码（LapSE）。结果显示GT通常比GIN有更高的准确率。
+
+<img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-09-02_21-11-28.png" />
+
+### 实验结论二：全局注意力在小图上能带来准确率提升
+
+### 实验结论三：GT缓解了over-squashing问题
