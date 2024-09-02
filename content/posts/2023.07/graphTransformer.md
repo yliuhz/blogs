@@ -236,6 +236,6 @@ GT已在多领域有实际应用：
 
 <img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-09-02_21-11-28.png" />
 
-### 实验结论二：全局注意力在小图上能带来准确率提升
+### 实验结论二：全局注意力在小型异配图上能带来准确率提升，在大图上受噪声影响难以训练
 
 ### 实验结论三：GT缓解了over-squashing问题
