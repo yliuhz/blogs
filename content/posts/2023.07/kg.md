@@ -15,7 +15,8 @@ ShowToc: true
 
 ### 知识图谱
 
-知识图谱是一种多关系图（Multi-relational Graph），包含实体（Entity）作为顶点，关系（Relation）作为边，三元组（Triplet）描述起始顶点通过某类型的连边指向目标顶点。
+知识图谱是一种有向多关系图（Multi-relational Graph），包含实体（Entity）作为顶点，关系（Relation）作为边，三元组（Triplet）描述起始顶点通过某类型的连边指向目标顶点。
+*[每对实体间可以有多条连边？](https://dglke.dgl.ai/doc/kg.html#what-is-a-knowledge-graph:~:text=A%20knowledge%20graph%20(KG)%20is%20a%20directed%20heterogeneous%20multigraph)*
 
 ### 问题设置
 
@@ -291,3 +292,31 @@ $$\mathcal{L}=\sum_{(h,l,t)\in S}\sum_{(h',l,t')\in S'\_{(h,l,t)}}[\gamma+d(\mat
 其中$d(\mathbf{x},\mathbf{y})=\Vert\mathbf{x}-\mathbf{y}\Vert_p$表示Lp-norm，$[x]_+$*表示ReLU函数*，$S'\_{(h,l,t)}=\\{(h',l,t)|h'\in E\\}\cup\\{(h,l,t')|t'\in E\\}$表示只修改三元组的一个端点实体。
 
 <img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-14_21-31-35.png" />
+
+## Towards Foundation Models for Knowledge Graph Reasoning
+
+{{< cite "3vnWvYP6" >}} 研究知识图谱的归纳式（inductive）推理问题。作者希望通过训练一个模型实现多知识图谱的补全任务，即训练所谓的基础模型（foundation model, FM）。为了得到FM，需要知道不同知识图谱的结构是否存在某种不变性（invariance）。
+
+知识图谱是一种多关系图，由实体集$V$（entity）、关系集$R$（relation）和三元组$E$（triple）集合定义，每个三元组表示了实体到另一个实体的有向连边。
+
+在直推式（transductive）设定，训练模型的图谱$G_{train}=(V_{train}, R_{train}, E_{train})$和推理时的图谱$G_{inf}=(V_{inf},R_{inf},E_{inf})$是相同的，即$G_{train}=G_{inf}$。
+
+在归纳式（inductive）设定下，训练图谱和推理图谱是不同的。归纳式设定按推理图谱和训练图谱的差别大小可分为简单和困难模式。
+
+- 简单模式：训练图谱和推理图谱共享关系集
+- 困难模式，全归纳推理：训练图谱和推理图谱具有完全不同的实体集和关系集
+
+知识图谱补全问题：预测三元组中的"?": $(h,r,?)$或$(?,r,t)$。
+
+### 知识图谱之间的不变性
+
+作者认为尽管训练图和推理图的关系集合不同，但关系之间的联系可能是相同的。作者构建了以关系为节点的有向图，图中包含4种连边:
+
+- head-to-head, h2h: 图谱中两个关系共享起始head实体
+- head-to-tail, h2t: 图谱中关系1的head实体是关系2的tail实体
+- tail-to-head, t2h: 图谱中关系1的tail实体是关系2的head实体
+- tail-to-tail, t2t: 图谱中两个关系共享终止tail实体
+
+## Neural Bellman-Ford Networks: A General Graph Neural Network Framework for Link Prediction
+
+{{< cite "Mgtc9rXk" >}}

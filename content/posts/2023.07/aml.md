@@ -223,3 +223,7 @@ $$\max_{G_S}MI(Y,(G_S,X_S))=H(Y)-H(Y|G=G_S,X=X_S)$$
 另外，作者可能参考GAT中attention的计算方法，使用额外的MLP对每个节点计算权重矩阵，不过都由共享的MLP计算得来.
 
 <img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-28_18-01-52.png" />
+
+## Propagation Structure-Aware Graph Transformer for Robust and Interpretable Fake News Detection
+
+{{< cite "d7N7uNWh" >}} 
