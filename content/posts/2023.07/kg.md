@@ -293,7 +293,7 @@ $$\mathcal{L}=\sum_{(h,l,t)\in S}\sum_{(h',l,t')\in S'\_{(h,l,t)}}[\gamma+d(\mat
 
 <img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-14_21-31-35.png" />
 
-## Towards Foundation Models for Knowledge Graph Reasoning
+## Towards Foundation Models for Knowledge Graph Reasoning ([Slide](https://docs.google.com/presentation/d/1wHoNTzOkeESN5jlcBflB8MqZT5VJQTl3/edit?usp=sharing&ouid=100698569321194310645&rtpof=true&sd=true))
 
 {{< cite "3vnWvYP6" >}} 研究知识图谱的归纳式（inductive）推理问题。作者希望通过训练一个模型实现多知识图谱的补全任务，即训练所谓的基础模型（foundation model, FM）。为了得到FM，需要知道不同知识图谱的结构是否存在某种不变性（invariance）。
 
