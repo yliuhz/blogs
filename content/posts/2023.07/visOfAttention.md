@@ -37,7 +37,7 @@ You are all resolved rather to die than to famish?
 
 为了解决由前面的单词$\\{\pmb{x}\_1,\cdots,\pmb{x}\_{l-1}\\}$预测下一个单词$\pmb{x}_l$的任务，一个简单的做法是取已观测到的单词表征的平均，即
 
-$$\pmb{x}\_l=\frac{1}{l-1}\sum\_{i=1}^{l-1}\pmb{x}\_i$$
+$$\pmb{x}\_l=\frac{1}{l}\sum\_{i=1}^{l}\pmb{x}\_i$$
 
 写成矩阵即为
 

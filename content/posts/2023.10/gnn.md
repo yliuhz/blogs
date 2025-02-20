@@ -6,6 +6,8 @@ mathjax: true
 bibFile: bib/bib.json
 ---
 
+
+
 本文致力于梳理常见的图节点编码器，包括较早的DeepWalk, Node2vec以及各种经典的图神经网络。
 
 ## DeepWalk: Online Learning of Social Representations
@@ -292,3 +294,7 @@ $$\tilde{A}\_{vu}=\frac{\omega(S_v,S_{vu})}{\sum_{u'\in\mathcal{N}(v)}\omega(S_v
 <img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-27_12-25-11.png" />
 
 <img src="https://raw.githubusercontent.com/yliuhz/blogs/master/content/posts/images/Snipaste_2024-08-27_12-25-19.png" />
+
+## Walking Out of the Weisfeiler Leman Hierarchy: Graph Learning Beyond Message Passing
+
+{{< cite "11oulOMc1" >}} 
